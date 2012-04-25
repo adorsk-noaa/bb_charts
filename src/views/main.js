@@ -1,8 +1,10 @@
 define([
+		'./tree_chart'
 ], 
-function(){
+function(TreeChartView){
 
 	views = {
+		'TreeChartView': TreeChartView
 	};
 
 	return views;
