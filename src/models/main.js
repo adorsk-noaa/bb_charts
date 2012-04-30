@@ -1,10 +1,16 @@
 define([
-		'./tree_chart'
+		'./chart',
+		'./tree_chart',
+		'./data_source',
+		'./schema'
 ], 
-function(TreeChartModel){
+function(ChartModel, TreeChartModel, DataSourceModel, SchemaModel){
 
 	models = {
-		'TreeChartModel': TreeChartModel
+		'ChartModel': ChartModel,
+		'TreeChartModel': TreeChartModel,
+		'DataSourceModel': DataSourceModel,
+		'SchemaModel': SchemaModel
 	};
 
 	return models;

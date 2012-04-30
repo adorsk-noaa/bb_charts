@@ -1,2 +1,60 @@
 @import "rounded-corners.less";
 
+.node {
+
+	margin-bottom: 1em;
+	font-size: 66%;
+
+	.data{
+
+		.bar{
+			border-color: blue;
+			border-style: solid;
+			background-color: blue;
+			height: 1em;
+		}
+
+	}
+
+	&.depth0 {
+	}
+
+	&.depth1 {
+		border-bottom: thin solid black;
+	}
+
+	&.depth2 {
+	}
+}
+
+
+.chart-editor{
+
+	.inner{
+		height: 100%;
+		width: 100%;
+		position: relative;
+	}
+
+	.panel{
+		position: absolute;	
+		border: thin solid black;
+	}
+
+	.left.panel{
+		min-width: 300px;
+		width: 300px;
+	}
+
+	.right.panel{
+	}
+}
+
+.chart {
+	.bar{
+		border-color: blue;
+		border-style: solid;
+		background-color: blue;
+		height: 1em;
+	}
+}

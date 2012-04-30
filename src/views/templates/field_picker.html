@@ -1,0 +1,8 @@
+<div class="inner">
+	<label for="<%= model.id %>-field-picker">Select a field:</label>
+	<select id="<%= model.id %>-field-picker" class="field-picker">
+		<% _.each(model.fields, function(field,index) { %>
+		<option value="<%= field.id %>"><%= field.label %></option>
+		<% }); %>
+	</select>
+</div>

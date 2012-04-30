@@ -1,10 +1,12 @@
 define([
-		'./tree_chart'
+		'./tree_chart',
+		'./chart_editor'
 ], 
-function(TreeChartView){
+function(TreeChartView, ChartEditorView){
 
 	views = {
-		'TreeChartView': TreeChartView
+		'TreeChartView': TreeChartView,
+		'ChartEditorView': ChartEditorView
 	};
 
 	return views;
