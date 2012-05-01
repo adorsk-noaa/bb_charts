@@ -51,10 +51,55 @@
 }
 
 .chart {
+
+	padding: 3em;
+
+	.inner{
+		position: relative;
+	}
+
+	.chart-image{
+		margin-bottom: 1.5em;
+		margin-top: auto;
+		border-bottom: thin solid black;
+		overflow-y: scroll;
+	}
+
 	.bar{
 		border-color: blue;
 		border-style: solid;
 		background-color: blue;
 		height: 1em;
+	}
+
+	.grid{
+		position: absolute;
+		pointer-events: none;
+		top: 0px;
+		left: 0px;
+		height: 100%;
+		width: 100%;
+
+		.grid-line{
+			position: absolute;
+			height: 100%;
+			border-right: thin solid gray;
+
+			.label{
+				position: absolute;
+				bottom: 0px;
+				right: .2em;
+			}
+		}
+	}
+}
+
+.single-field-selector{
+	.field {
+		display: none;
+		
+		&.selected {
+			display: inherit;
+		}
 	}
 }

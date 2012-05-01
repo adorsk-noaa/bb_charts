@@ -4,33 +4,29 @@ define([
 	"use!underscore",
 	"use!ui",
 	"_s",
-	"Dialogs",
-	"./category_field_picker_dialog",
-	"./value_field_picker_dialog",
+	"./single_field_selector",
+	"./value_field",
 	"text!./templates/chart_editor.html"
 		],
-function($, Backbone, _, ui, _s, Dialogs, CategoryFieldPickerDialogView, ValueFieldPickerDialogView, chart_editor_template){
+function($, Backbone, _, ui, _s, SingleFieldSelectorView, ValueFieldView, template){
 
 	var ChartEditorView = Backbone.View.extend({
 
 		events: {
-			'click .add-category-field-button': 'onAddCategoryFieldButtonClick',
-			'click .add-value-field-button': 'onAddValueFieldButtonClick'
 		},
 
 		initialize: function(){
-			this.render();
 			$(this.el).addClass('chart-editor');
-
-			this.model.get('category_fields').on('add remove change', this.onCategoryFieldsChange, this);
-			this.model.get('value_fields').on('add remove', this.onValueFieldsChange, this);
-			this.model.on('change:data', this.onDataChange, this);
+			this.render();
 		},
 
 		render: function(){
-			schema = this.model.get('datasource').get('schema');
+			$(this.el).html(_.template(template, {}));
 
-			$(this.el).html(_.template(chart_editor_template, {}));
+			// Add the chart.
+			$('.chart-wrapper', this.el).append(this.model.get('chart').el);
+
+			schema = this.model.get('chart').model.get('datasource').get('schema');
 
 			this.left_panel_el = $('.left.panel', this.el);
 			this.right_panel_el = $('.right.panel', this.el);
@@ -49,29 +45,33 @@ function($, Backbone, _, ui, _s, Dialogs, CategoryFieldPickerDialogView, ValueFi
 				}
 			});
 
-			var cfpd_el = $('<div style="display: none;"></div>');
-			$('body').append(cfpd_el);
-			this.category_field_picker_dialog = new CategoryFieldPickerDialogView({
-				el: cfpd_el,
-				model: new Backbone.Model({
-					chart: this.model,
-					title: 'Add category field',
-					zIndex: 0,
-					fields: this.model.get('datasource').get('schema').get('category_fields')
-				}),
+			//  Add category field selector.
+			var category_field_model = new Backbone.Model({
+				field_definitions: schema.get('category_fields')
+			});
+			var category_field_selector = new SingleFieldSelectorView({
+				el: $('.category-field', this.el),
+				model: category_field_model
 			});
 
-			var vfpd_el = $('<div style="display: none;"></div>');
-			$('body').append(vfpd_el);
-			this.value_field_picker_dialog = new ValueFieldPickerDialogView({
-				el: vfpd_el,
-				model: new Backbone.Model({
-					chart: this.model,
-					title: 'Add value field',
-					zIndex: 0,
-					fields: this.model.get('datasource').get('schema').get('value_fields')
-				}),
+			//  Add value field selector.
+			var value_field_model = new Backbone.Model({
+				field_definitions: schema.get('value_fields')
 			});
+			var value_field_selector = new SingleFieldSelectorView({
+				el: $('.value-field', this.el),
+				model: value_field_model,
+				fieldViewClass: ValueFieldView
+			});
+
+			// Change the chart fields when the field selectors change.
+			category_field_model.on('change:selected_field', function(e){
+				this.model.get('chart').model.setCategoryFields([category_field_model.get('selected_field')]);
+			}, this);
+			value_field_model.on('change:selected_field', function(e){
+				this.model.get('chart').model.setValueFields([value_field_model.get('selected_field')]);
+			}, this);
+
 		},
 
 		getBounds: function(el){
@@ -131,83 +131,6 @@ function($, Backbone, _, ui, _s, Dialogs, CategoryFieldPickerDialogView, ValueFi
 			var container = $(el).parent();
 			$(el).css('height', container.height());
 		},
-
-		onAddCategoryFieldButtonClick: function(){
-			this.category_field_picker_dialog.show();
-		},
-
-		onCategoryFieldsChange: function(){
-			this.renderCategoryFields();
-			this.fetchData();
-		},
-
-		renderCategoryFields: function(){
-			$('.category-fields', this.el).html(JSON.stringify(this.model.get('category_fields').toJSON()));
-		},
-
-		onAddValueFieldButtonClick: function(){
-			this.value_field_picker_dialog.show();
-		},
-
-		onValueFieldsChange: function(){
-			this.renderValueFields();
-			this.fetchData();
-		},
-
-		renderValueFields: function(){
-			$('.value-fields', this.el).html(JSON.stringify(this.model.get('value_fields').toJSON()));
-		},
-
-		fetchData: function(){
-			console.log('fetch data');
-			var datasource = this.model.get('datasource');
-			var _this = this;
-			var query = {};
-			datasource.getData({
-				'query': query,
-				success: function(data, status, xhr){
-					_this.model.set({'data': data});
-				},
-				error: function(xhr, status, error){
-				}
-			});
-		},
-
-		onDataChange: function(){
-			console.log('onDataChange');
-			this.renderData();
-		},
-
-		renderData: function(){
-			$('.chart', this.el).html('');
-			if (! this.model.get('value_fields')){
-				return;
-			}
-
-			var value_fields = this.model.get('value_fields');
-			var vf = value_fields.models.pop();
-			var min = vf.get('min');
-			var max = vf.get('max');
-			var range = max - min;
-			var zero_pos = (0 - min)/range;
-
-			_.each(this.model.get('data'), function(datum){
-				var datum_pos  = (datum - min)/range * 100;
-				if ( datum_pos < zero_pos ){
-					var datum_el = $(_s.sprintf("<div class=\"bar\" style=\"width: %.1f%%; position: relative; right: 0px;\"></div>", zero_pos - datum_pos));
-				}
-				else{
-					var datum_el = $(_s.sprintf("<div class=\"bar\" style=\"width: %.1f%%\"></div>", datum_pos - zero_pos));
-				}
-
-				$(datum_el).css('height', 10);
-				$(datum.el).css('border', 'thin solid black');
-
-				$('.chart', this.el).append(datum_el);
-
-			}, this);
-		}
-
 
 	});
 
