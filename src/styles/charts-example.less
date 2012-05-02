@@ -98,6 +98,12 @@
 			.label{
 				display: table-cell;
 				width: @label-width;
+				.text{
+					width: @label-width;
+					text-overflow: ellipsis;
+					overflow: hidden;
+					white-space: nowrap;
+				}
 			}
 			.bar {
 				display: table-cell;
