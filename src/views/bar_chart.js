@@ -4,9 +4,10 @@ define([
 	"use!underscore",
 	"_s",
 	"./chart",
-	"text!./templates/bar_chart.html"
+	"text!./templates/bar_chart.html",
+	"text!./templates/bar_chart_row.html"
 		],
-function($, Backbone, _, _s, ChartView, template){
+function($, Backbone, _, _s, ChartView, template, row_template){
 
 	var BarChartView = ChartView.extend({
 
@@ -26,7 +27,7 @@ function($, Backbone, _, _s, ChartView, template){
 		},
 
 		renderData: function(){
-			var $container = $('.chart-image', this.el);
+			$container = $('.chart-image', this.el);
 			$container.html('');
 
 			var vf = this.model.get('value_fields').models[0];
@@ -41,23 +42,21 @@ function($, Backbone, _, _s, ChartView, template){
 			var zero_pos = (0 - this.vmin)/this.vrange;
 
 			_.each(this.model.get('data'), function(datum){
-				var datum_pos  = (datum - this.vmin)/this.vrange * 100;
-				var left = 0;
+				var datum_pos  = (datum.value - this.vmin)/this.vrange * 100;
+				var css_pos;
 				var right = 0;
 				if ( datum_pos < zero_pos ){
-					left = datum_pos;
-					right = 100 - zero_pos;
+					css_pos = _s.sprintf('right: %.1f%%', 100 - zero_pos);
 				}
 				else{
-					left = zero_pos;
-					right = 100 - datum_pos;
+					css_pos = _s.sprintf('left: %.1f%%', zero_pos);
 				}
-				var datum_el = $(_s.sprintf("<div class=\"bar\" style=\"margin-left: %.1f%%; margin-right: %.1f%%\"></div>", left, right));
-
-				$(datum_el).css('height', 10);
-				$(datum.el).css('border', 'thin solid black');
-
-				$container.append(datum_el);
+				$row = $(_.template(row_template, {
+					'label': datum.label,
+					'css_pos': css_pos,
+					'width': Math.abs(datum.value)/this.vrange * 100
+				}));
+				$container.append($row);
 
 			}, this);
 			
@@ -65,12 +64,13 @@ function($, Backbone, _, _s, ChartView, template){
 		},
 
 		renderGrid: function(){
+			var $grid = $('.chart-grid', this.el);
+			$grid.html('');
 
-			var $container = $('.chart-image', this.el);
 			_.each(this.model.get('grid_line_positions'), function(pos){
 				var label = _s.sprintf("%.1f", this.vmin + pos * this.vrange);
-				var $grid_line = $(_s.sprintf('<div class="grid-line" style="right: %.1f%%;"><div class="label">%s</div></div>', (1 - pos) * 100, label ));
-				$container.append($grid_line);
+				var $grid_line = $(_s.sprintf('<div class="line" style="right: %.1f%%;"><div class="label">%s</div></div>', (1 - pos) * 100, label ));
+				$grid.append($grid_line);
 			}, this);
 		},
 
