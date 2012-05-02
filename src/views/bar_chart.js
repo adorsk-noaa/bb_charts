@@ -39,7 +39,7 @@ function($, Backbone, _, _s, ChartView, template, row_template){
 			}
 
 			this.vrange = this.vmax - this.vmin;
-			var zero_pos = (0 - this.vmin)/this.vrange;
+			var zero_pos = (0 - this.vmin)/this.vrange * 100;
 
 			_.each(this.model.get('data'), function(datum){
 				var datum_pos  = (datum.value - this.vmin)/this.vrange * 100;
