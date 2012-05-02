@@ -65,8 +65,8 @@ function($, Backbone, _, _s, ChartView, template){
 		},
 
 		renderGrid: function(){
-			var $container = $('.grid', this.el);
-			$container.html('');
+
+			var $container = $('.chart-image', this.el);
 			_.each(this.model.get('grid_line_positions'), function(pos){
 				var label = _s.sprintf("%.1f", this.vmin + pos * this.vrange);
 				var $grid_line = $(_s.sprintf('<div class="grid-line" style="right: %.1f%%;"><div class="label">%s</div></div>', (1 - pos) * 100, label ));
