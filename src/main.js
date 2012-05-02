@@ -1,11 +1,13 @@
 define([
 	"./models/main",
 	"./views/main",
+	"./util/main",
 ],
-function(models, views){
+function(models, views, util){
 	return {
 		models: models,
-		views: views
+		views: views,
+		util: util
 	}
 });
 

@@ -4,16 +4,25 @@ define([
 	"use!underscore",
 	"_s",
 	"./chart",
+	"./../util/simple_interpreter",
 	"text!./templates/bar_chart.html",
 	"text!./templates/bar_chart_row.html"
 		],
-function($, Backbone, _, _s, ChartView, template, row_template){
+function($, Backbone, _, _s, ChartView, SimpleInterpreter, template, row_template){
 
 	var BarChartView = ChartView.extend({
 
-		initialize: function(){
+		initialize: function(opts){
 
 			$(this.el).addClass('chart bar-chart');
+
+			if (! opts.hasOwnProperty('dataInterpreter')){
+				this.dataInterpreter = new SimpleInterpreter();
+			}
+			else{
+				this.dataInterpreter = opts.dataInterpreter;
+			}
+
 			this.render();
 
 			this.model.get('category_fields').on('change add remove reset', this.onCategoryFieldsChange, this);
@@ -42,9 +51,9 @@ function($, Backbone, _, _s, ChartView, template, row_template){
 			var zero_pos = (0 - this.vmin)/this.vrange * 100;
 
 			_.each(this.model.get('data'), function(datum){
-				var datum_pos  = (datum.value - this.vmin)/this.vrange * 100;
+				var datum_value = datum.data[0].value;
+				var datum_pos  = (datum.data[0].value - this.vmin)/this.vrange * 100;
 				var css_pos;
-				var right = 0;
 				if ( datum_pos < zero_pos ){
 					css_pos = _s.sprintf('right: %.1f%%', 100 - zero_pos);
 				}
@@ -54,7 +63,7 @@ function($, Backbone, _, _s, ChartView, template, row_template){
 				$row = $(_.template(row_template, {
 					'label': datum.label,
 					'css_pos': css_pos,
-					'width': Math.abs(datum.value)/this.vrange * 100
+					'width': Math.abs(datum_value)/this.vrange * 100
 				}));
 				$container.append($row);
 
@@ -97,7 +106,7 @@ function($, Backbone, _, _s, ChartView, template, row_template){
 			datasource.getData({
 				'query': query,
 				success: function(data, status, xhr){
-					_this.model.set({'data': data});
+					_this.model.set({'data': _this.dataInterpreter.parse(data)});
 				},
 				error: function(xhr, status, error){
 				}
