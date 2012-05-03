@@ -107,8 +107,7 @@ function($, Backbone, _, _s, ChartView, SimpleInterpreter, template, row_templat
 				}
 
 				$row = $(_.template(row_template, {
-					//'label': datum.label,
-					'label': value,
+					'label': datum.label,
 					'visibility': visibility,
 					'width': width,
 					'position': position
@@ -129,10 +128,15 @@ function($, Backbone, _, _s, ChartView, SimpleInterpreter, template, row_templat
 			$('.chart-grid-wrapper .inner', this.el).css('marginRight', image_margin);
 
 			_.each(this.model.get('grid_line_positions'), function(pos){
-				var label = _s.sprintf("%.1f", this.vmin + pos * this.vrange);
+				var value = this.vmin + pos * this.vrange; 
+				var label = this.formatGridLabel(value);
 				var $grid_line = $(_s.sprintf('<div class="line" style="right: %.1f%%;"><div class="label">%s</div></div>', (1 - pos) * 100, label ));
 				$grid.append($grid_line);
 			}, this);
+		},
+
+		formatGridLabel: function(value){
+			return value.toExponential(1);
 		},
 
 		onCategoryFieldsChange: function(){
