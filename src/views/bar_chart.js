@@ -110,7 +110,10 @@ function($, Backbone, _, _s, ChartView, SimpleInterpreter, template, row_templat
 					'label': datum.label,
 					'visibility': visibility,
 					'width': width,
-					'position': position
+					'position': position,
+					'value': value,
+					'percent_of_selected': 12.3,
+					'percent_of_total': 87.3
 				}));
 				$container.append($row);
 

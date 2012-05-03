@@ -1,11 +1,39 @@
-<div class="row">
-	<div class="label">
-		<div class="text"><%= label %></div>
-	</div>
-	<div class="bar">
-		<div class="image-wrapper">
-			<div class="image" style="<%= visibility %> <%= position %> <%= width %>">
+<div class="row-wrapper">
+	<div class="row">
+		<div class="label">
+			<div class="text"><%= label %></div>
+		</div>
+		<div class="bar">
+			<div class="image-wrapper">
+				<div class="image" style="<%= visibility %> <%= position %> <%= width %>">
+				</div>
 			</div>
 		</div>
+		<div class="tooltip">
+			<span>
+				<table>
+					<tr class="name">
+						<td class="label">Name: </td><td class="value"><%= label %></td>
+					</tr>
+					<tr class="data">
+						<td class="label">Value: </td><td class="value"><%= value %> <span class="percentages">(<%= percent_of_selected %>% of selected data, <%= percent_of_total%> % of all data)</span></td>
+					</tr>
+				</table>
+			</span>
+		</div>
+
+		<div class="tooltip">
+			<span>
+				<table>
+					<tr class="name">
+						<td class="label">Name: </td><td class="value"><%= label %></td>
+					</tr>
+					<tr class="data">
+						<td class="label">Value: </td><td class="value"><%= value %> <span class="percentages">(<%= percent_of_selected %>% of selected data, <%= percent_of_total%> % of all data)</span></td>
+					</tr>
+				</table>
+			</span>
+		</div>
+
 	</div>
 </div>

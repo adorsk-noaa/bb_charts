@@ -88,17 +88,48 @@
 
 	.chart-image{
 		width: 100%;
-		display: table;
-
 		@row_height: 1em;
 
-		.row {
-			display: table-row;
+		.row-wrapper{
 			height: @row_height;
+			width: 100%;
+		}
+
+		.row {
+			height: @row_height;
+			width: 100%;
+			position: relative;
+
+			&:hover {
+				background-color: white;
+			}
+
+			/* Tooltip Styling */
+			cursor: pointer; text-decoration: none;
+
+			.tooltip{
+				visibility: hidden;
+				border-bottom: 1px dotted #000000;
+				color: #000000; outline: none;
+				position: absolute;
+				top: 1em;
+				left: 2em;
+			}
+
+			/*
+			&:hover .tooltip{
+				visibility: visible;
+			}			
+			*/	
+
+			/* End Tooltip Styling */
+
 
 			.label{
+				position: absolute;
+				top: 0;
+				left: 0;
 				height: 100%;
-				display: table-cell;
 				width: @label-width;
 				.text{
 					width: @label-width;
@@ -108,9 +139,12 @@
 				}
 			}
 			.bar {
+				position: absolute;
+				top: 0;
+				left: @label-width;
+				right: 0;
 				height: 100%;
 				display: table-cell;
-				width: auto;
 				overflow: hidden;
 				vertical-align: middle;
 
