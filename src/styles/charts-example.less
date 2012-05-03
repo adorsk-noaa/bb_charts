@@ -27,7 +27,6 @@
 	}
 }
 
-
 .chart-editor{
 
 	> .inner{
@@ -91,11 +90,14 @@
 		width: 100%;
 		display: table;
 
+		@row_height: 1em;
+
 		.row {
 			display: table-row;
-			height: 1em;
+			height: @row_height;
 
 			.label{
+				height: 100%;
 				display: table-cell;
 				width: @label-width;
 				.text{
@@ -106,18 +108,24 @@
 				}
 			}
 			.bar {
+				height: 100%;
 				display: table-cell;
 				width: auto;
-				position: relative;
 				overflow: hidden;
+				vertical-align: middle;
+
+				.image-wrapper{
+					position: relative;
+					height: .85 * @row_height;
+				}
 
 				.image {
+					height: 100%;
 					position: absolute;
-					border-color: blue;
-					border-style: solid;
 					background-color: blue;
-					margin-top: 5%;
-					margin-bottom: 5%;
+					border-width: 0px 2px;
+					border-style: solid;
+					border-color: black;
 				}
 			}
 		}
