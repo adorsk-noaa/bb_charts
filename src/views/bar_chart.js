@@ -39,6 +39,8 @@ function($, Backbone, _, _s, ChartView, SimpleInterpreter, template, row_templat
 			$container = $('.chart-image', this.el);
 			$container.html('');
 
+			var data = this.model.get('data');
+
 			var vf = this.model.get('value_fields').models[0];
 			this.vmin = vf.get('min');
 			this.vmax = vf.get('max');
@@ -47,10 +49,25 @@ function($, Backbone, _, _s, ChartView, SimpleInterpreter, template, row_templat
 				return;
 			}
 
+			// Parse max/min parameters, and set to match data if 'auto'.
+			_.each([
+					{key:'vmin', func: _.min}, 
+					{key:'vmax', func: _.max}
+					],
+					function(parameter){
+						if (this[parameter.key] == 'auto'){
+							var item = parameter.func(data, function(d){
+								return d.data[0].value;
+							});
+							this[parameter.key]  = item.data[0].value;
+						}
+						this[parameter.key] = parseFloat(this[parameter.key]);
+					},this);
+
 			this.vrange = this.vmax - this.vmin;
 			var zero_pos = (0 - this.vmin)/this.vrange * 100;
 
-			_.each(this.model.get('data'), function(datum){
+			_.each(data, function(datum){
 				var value = parseFloat(datum.data[0].value);
 				var width = 'width: 0;';
 				var visibility = 'visibility: hidden;';
@@ -79,12 +96,12 @@ function($, Backbone, _, _s, ChartView, SimpleInterpreter, template, row_templat
 
 					if (value > 0){
 						var left = Math.max(this.vmin, 0);
-						width = _s.sprintf('width: %.1f%%;', (value - left)/this.vrange * 100);
+						width = _s.sprintf('width: %.1f%%;', (Math.min(value, this.vmax) - left)/this.vrange * 100);
 						position = _s.sprintf('left: %.1f%%;', (left - this.vmin)/this.vrange * 100);
 					}
 					else{
 						var right = Math.min(this.vmax, 0);
-						width = _s.sprintf('width: %.1f%%;', (right - value)/this.vrange * 100);
+						width = _s.sprintf('width: %.1f%%;', (right - Math.max(value, this.vmin))/this.vrange * 100);
 						position = _s.sprintf('right: %.1f%%;', 100 - (right - this.vmin)/this.vrange * 100);
 					}
 				}

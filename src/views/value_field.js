@@ -26,12 +26,6 @@ function($, Backbone, _, ui, _s, template){
 		onConfigFormChange: function(e){
 			var attr_name = $(e.target).attr('name');
 			var attr_value = $(e.target).attr('value');
-
-			var value_type = $(e.target).attr('value_type');
-			if (value_type == 'numeric'){
-				attr_value = parseFloat(attr_value);
-			}
-
 			var set_obj = {};
 			set_obj[attr_name] = attr_value;
 			this.model.set(set_obj);
