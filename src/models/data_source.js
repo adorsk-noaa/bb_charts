@@ -6,7 +6,13 @@ function(Backbone){
 var DataSourceModel = Backbone.Model.extend({
 
 	defaults: {
-		schema: {}
+		schema: {},
+		query: new Backbone.Model({
+			'VALUE_FIELDS': {},
+			'GROUPING_FIELDS': {},
+			'FILTERS': {}
+		}),
+		dataStore: {}
 	},
 
 	initialize: function(){

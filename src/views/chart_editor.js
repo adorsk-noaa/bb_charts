@@ -25,8 +25,9 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, ValueFieldView, templa
 
 			// Add the chart.
 			$('.chart-wrapper', this.el).append(this.model.get('chart').el);
-
-			schema = this.model.get('chart').model.get('datasource').get('schema');
+			
+			var ds = this.model.get('datasource');
+			var schema = ds.get('schema');
 
 			this.left_panel_el = $('.left.panel', this.el);
 			this.right_panel_el = $('.right.panel', this.el);
@@ -64,12 +65,18 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, ValueFieldView, templa
 				fieldViewClass: ValueFieldView
 			});
 
-			// Change the chart fields when the field selectors change.
+			// Fetch new data when the datasource query changes.
+			ds.get('query').on('change', ds.fetch, ds);
+
+			// Handle changes in datasource data.
+			ds.on('change:data', this.onDatasourceDataChange, this);
+
+			// Change the datasource query when the field selectors change.
 			category_field_model.on('change:selected_field', function(e){
-				this.model.get('chart').model.setCategoryFields([category_field_model.get('selected_field')]);
+				ds.get('query').set('VALUE_FIELDS', [category_field_model.get('selected_field')]);
 			}, this);
 			value_field_model.on('change:selected_field', function(e){
-				this.model.get('chart').model.setValueFields([value_field_model.get('selected_field')]);
+				ds.get('query').set({'GROUPING_FIELDS': [category_field_model.get('selected_field')]});
 			}, this);
 
 			// Set the initial default fields.
@@ -82,6 +89,12 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, ValueFieldView, templa
 				value_field_selector.setSelectedField(value_fields[0].id);
 			}
 
+		},
+
+		onDatasourceDataChange: function(){
+			console.log('onDatasourceDatachange');
+			// Set chart data.
+			this.model.get('chart').set('data', this.model.get('datasource').get('data'));
 		},
 
 		getBounds: function(el){
