@@ -87,6 +87,10 @@ function($, Backbone, _, ui, _s, CategoryFieldView, template){
 			var selected_field_view = this.rendered_field_definitions[selected_field_id].view;
 			$(selected_field_view.el).addClass('selected');
 			this.model.set({'selected_field': this.rendered_field_definitions[selected_field_id].model});
+		},
+
+		setSelectedField: function(field_id){
+			$('.field-picker-select', this.el).val(field_id).change();
 		}
 
 	});

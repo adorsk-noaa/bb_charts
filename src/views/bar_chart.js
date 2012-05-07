@@ -2,13 +2,14 @@ define([
 	"jquery",
 	"use!backbone",
 	"use!underscore",
+	"use!ui",
 	"_s",
 	"./chart",
 	"./../util/simple_interpreter",
 	"text!./templates/bar_chart.html",
 	"text!./templates/bar_chart_row.html"
 		],
-function($, Backbone, _, _s, ChartView, SimpleInterpreter, template, row_template){
+function($, Backbone, _, ui, _s, ChartView, SimpleInterpreter, template, row_template){
 
 	var BarChartView = ChartView.extend({
 
@@ -29,6 +30,7 @@ function($, Backbone, _, _s, ChartView, SimpleInterpreter, template, row_templat
 			this.model.get('value_fields').on('change', this.onValueFieldsChange, this);
 			this.model.get('value_fields').on('add remove reset', this.onValueFieldsAddRemove, this);
 			this.model.on('change:data', this.onDataChange, this);
+			this.model.on('change:query', function(){console.log('query change')});
 		},
 
 		render: function(){
@@ -38,12 +40,22 @@ function($, Backbone, _, _s, ChartView, SimpleInterpreter, template, row_templat
 		renderData: function(){
 			$container = $('.chart-image', this.el);
 			$container.html('');
+	
+			var value_fields = this.model.get('value_fields');
+			if ( (! value_fields) || (value_fields.models.length <= 0) ){
+				return;
+			}
 
 			var data = this.model.get('data');
+			if (! data){
+				return;
+			}
 
-			var vf = this.model.get('value_fields').models[0];
-			this.vmin = vf.get('min');
-			this.vmax = vf.get('max');
+			console.log('data is', data);
+
+			var value_field = value_fields.models[0];
+			this.vmin = value_field.get('min');
+			this.vmax = value_field.get('max');
 
 			if ((this.vmin == null) || (this.vmax == null)){
 				return;
@@ -119,7 +131,34 @@ function($, Backbone, _, _s, ChartView, SimpleInterpreter, template, row_templat
 
 			}, this);
 
-			this.renderGrid();
+			this.renderAxis();
+			//this.renderGrid();
+		},
+
+		renderAxis: function(){
+			var $axis = $('.chart-axis', this.el);
+			$axis.html('');
+
+			// Explicilty resize because scrollbars alter the chart width.
+			var image_margin = $('.chart-image-wrapper', this.el).width() - $('.chart-image', this.el).width();
+			$('.chart-axis-wrapper .inner', this.el).css('marginRight', image_margin);
+
+			var minmax = [
+				{
+					name: 'min',
+					pos: 0,
+					value: this.vmin
+				},
+				{
+					name: 'max',
+					pos: 100,
+					value: this.vmax
+				},
+			];
+			_.each(minmax, function(m){
+				var $el = $(_s.sprintf('<div class="axis-input-wrapper" style="right: %.1f%%;"><input class="axis-input %s" value="%s"/></div>', (1 - m.pos) * 100, m.name, m.value));
+				$axis.append($el);
+			}, this);
 		},
 
 		renderGrid: function(){
@@ -143,7 +182,7 @@ function($, Backbone, _, _s, ChartView, SimpleInterpreter, template, row_templat
 		},
 
 		onCategoryFieldsChange: function(){
-			this.fetchData();
+			this.updateDataQuery();
 		},
 
 		onValueFieldsChange: function(){
@@ -151,17 +190,52 @@ function($, Backbone, _, _s, ChartView, SimpleInterpreter, template, row_templat
 		},
 
 		onValueFieldsAddRemove: function(){
-			this.fetchData();
+			this.updateDataQuery();
 		},
 
 		onDataChange: function(){
 			this.renderData();
 		},
 
+		updateDataQuery: function(){
+			var query = this.model.get('query') || {};
+
+			// @TODO
+			// BELOW IS A BIT HACKY (ID vs. FIELD_ID).
+			// REWORK LATER.
+
+			// Set grouping fields.
+			var category_fields = this.model.get('category_fields');
+			if (category_fields && category_fields.models.length > 0){
+				var category_field = category_fields.models[0].toJSON();
+				category_field['id'] = category_field['field_id'];
+				query['GROUPING_FIELDS'] = [category_field];
+			}
+
+			// Set value fields.
+			var value_fields = this.model.get('value_fields');
+			if (value_fields && value_fields.models.length > 0){
+				var value_field = value_fields.models[0].toJSON();
+				value_field['id'] = value_field['field_id'];
+				query['VALUE_FIELDS'] = [value_field];
+			}
+
+			// Set filters.
+			query['FILTERS'] = this.model.get('filters');
+			this.model.set('query', query);
+
+			this.fetchData();
+
+		},
+
 		fetchData: function(){
 			var datasource = this.model.get('datasource');
 			var _this = this;
-			var query = {};
+			var query = this.model.get('query');
+
+			if (! query || ! query.hasOwnProperty('VALUE_FIELDS')){
+				return;
+			}
 			datasource.getData({
 				'query': query,
 				success: function(data, status, xhr){

@@ -72,6 +72,16 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, ValueFieldView, templa
 				this.model.get('chart').model.setValueFields([value_field_model.get('selected_field')]);
 			}, this);
 
+			// Set the initial default fields.
+			var category_fields = schema.get('category_fields');
+			if (category_fields && category_fields.length > 0){
+				category_field_selector.setSelectedField(category_fields[0].id);
+			}
+			var value_fields = schema.get('value_fields');
+			if (value_fields && value_fields.length > 0){
+				value_field_selector.setSelectedField(value_fields[0].id);
+			}
+
 		},
 
 		getBounds: function(el){

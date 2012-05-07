@@ -84,48 +84,50 @@
 				height: 100%;
 			}
 		}
+
+		@axis_height: 1.5em;
+		.chart-axis-wrapper{
+			position: absolute;
+			bottom: -@axis_height;
+			height: @axis_height;
+			width: 100%;
+
+			> .inner{
+				margin-left: @label-width;
+				margin-right: 0;
+				height: 100%;
+			}
+		}
 	}
 
 	.chart-image{
 		width: 100%;
-		@row_height: 1em;
+		@row_height: 1;
+		@row_height_em: 1em;
 
 		.row-wrapper{
-			height: @row_height;
+			height: @row_height_em;
 			width: 100%;
+			margin-bottom: .4 * @row_height_em;
 		}
 
 		.row {
-			height: @row_height;
+			height: 100%;
 			width: 100%;
 			position: relative;
 
 			&:hover {
 				background-color: white;
+				border-width: thin 0;
+				border-color: black;
+				border-style: solid;
 			}
 
 			/* Tooltip Styling */
 			cursor: pointer; text-decoration: none;
 
-			.tooltip{
-				visibility: hidden;
-				border-bottom: 1px dotted #000000;
-				color: #000000; outline: none;
-				position: absolute;
-				top: 1em;
-				left: 2em;
-			}
 
-			/*
-			&:hover .tooltip{
-				visibility: visible;
-			}			
-			*/	
-
-			/* End Tooltip Styling */
-
-
-			.label{
+			> .label{
 				position: absolute;
 				top: 0;
 				left: 0;
@@ -138,7 +140,7 @@
 					white-space: nowrap;
 				}
 			}
-			.bar {
+			> .bar {
 				position: absolute;
 				top: 0;
 				left: @label-width;
@@ -150,8 +152,8 @@
 
 				.image-wrapper{
 					position: absolute;
-					top: 16%;
-					bottom: 16%;
+					top: 15%;
+					bottom: 15%;
 					width: 100%;
 				}
 
@@ -163,6 +165,7 @@
 					border-style: solid;
 					border-color: black;
 				}
+
 			}
 		}
 
@@ -173,13 +176,13 @@
 		width: 100%;
 		position: relative;
 
-		.line{
+		> .line{
 			position: absolute;
 			top: 0px;
 			height: 100%;
 			border-right: thin solid gray;
 
-			.label {
+			> .label {
 				position: absolute;
 				bottom: 0px;
 				right: .2em;
@@ -187,6 +190,30 @@
 		}
 	}
 
+	.chart-axis{
+		height: 100%;
+		width: 100%;
+		position: relative;
+
+		> .axis-input-wrapper{
+			position: absolute;
+			top: 0px;
+			height: 100%;
+			border-right: thin solid gray;
+
+			> .axis-input {
+				position: absolute;
+				bottom: 0px;
+				right: .2em;
+			}
+		}
+	}
+}
+
+.info-dialog{
+	td {
+		vertical-align: top;
+	}
 }
 
 .single-field-selector{
