@@ -1,16 +1,26 @@
 <div class="inner">
 	<div class="field-configuration">
 		<form class="config-form">
+			<div class="inner">
 			<% if (model.get('type')) { %>
 				<% if (model.get('type') == 'numerical' ) { %>
-					<div class="numerical">
-						<label for="<% print ([model.id, 'min'].join('-')); %>">min: </label><input id="<% print ([model.id, 'min'].join('-')); %>" name="min" type="text" value="<% print(model.get('min')); %>">
-						<label for="<% print ([model.id, 'max'].join('-')); %>">max: </label><input id="<% print ([model.id, 'max'].join('-')); %>" name="max" type="text" value="<% print(model.get('max')); %>">
+					<div class="field-row numerical">
+						<div class="field-cell">
+							<label for="<% print ([model.id, 'min'].join('-')); %>">min: </label><input id="<% print ([model.id, 'min'].join('-')); %>" name="min" type="text" value="<% print(model.get('min')); %>">
+						</div>
+						<div class="field-cell">
+							<label for="<% print ([model.id, 'max'].join('-')); %>">max: </label><input id="<% print ([model.id, 'max'].join('-')); %>" name="max" type="text" value="<% print(model.get('max')); %>">
+						</div>
 					</div>
 				<% } else {%>
-					<div class="unconfigurable">No configuration options for this type of field.</div>
+					<div class="field-row unconfigurable">
+						<div div class="field-cell">
+							<div>No configuration options for this type of field.</div>
+						</div>
+					</div>
 				<% } %>
 			<% } %>
+			</div>
 		</form>
 	</div>
 </div>

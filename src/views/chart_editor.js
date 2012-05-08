@@ -50,6 +50,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, ValueFieldView, templa
 			var category_field_model = new Backbone.Model({
 				field_definitions: schema.get('category_fields')
 			});
+			this.model.set('category_field', category_field_model);
 			var category_field_selector = new SingleFieldSelectorView({
 				el: $('.category-field', this.el),
 				model: category_field_model
@@ -59,6 +60,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, ValueFieldView, templa
 			var value_field_model = new Backbone.Model({
 				field_definitions: schema.get('value_fields')
 			});
+			this.model.set('value_field', value_field_model);
 			var value_field_selector = new SingleFieldSelectorView({
 				el: $('.value-field', this.el),
 				model: value_field_model,
@@ -72,12 +74,8 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, ValueFieldView, templa
 			ds.on('change:data', this.onDatasourceDataChange, this);
 
 			// Change the datasource query when the field selectors change.
-			category_field_model.on('change:selected_field', function(e){
-				ds.get('query').set('VALUE_FIELDS', [category_field_model.get('selected_field')]);
-			}, this);
-			value_field_model.on('change:selected_field', function(e){
-				ds.get('query').set({'GROUPING_FIELDS': [category_field_model.get('selected_field')]});
-			}, this);
+			category_field_model.on('change:selected_field', this.onCategoryFieldChange, this);
+			value_field_model.on('change:selected_field', this.onValueFieldChange, this);
 
 			// Set the initial default fields.
 			var category_fields = schema.get('category_fields');
@@ -89,6 +87,22 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, ValueFieldView, templa
 				value_field_selector.setSelectedField(value_fields[0].id);
 			}
 
+		},
+
+		onCategoryFieldChange: function(){
+			$('.category_field', this.el).html(this.model.get('category_field').get('selected_field').get('label'));
+			this.updateDatasourceQuery()
+		},
+
+		onValueFieldChange: function(){
+			this.updateDatasourceQuery()
+		},
+
+		updateDatasourceQuery: function(){
+			this.model.get('datasource').get('query').set({
+				'CATEGORY_FIELDS': [this.model.get('category_field').get('selected_field')],
+				'VALUE_FIELDS': [this.model.get('value_field').get('selected_field')]
+			});
 		},
 
 		onDatasourceDataChange: function(){
@@ -116,6 +130,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, ValueFieldView, templa
 			var inner_el = $(this.el).children('.inner');
 			var container = inner_el.parent();
 			var totalHeight = container.height();
+			console.log(inner_el);
 			inner_el.css('height', totalHeight);
 
 			// Resize panels.

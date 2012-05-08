@@ -27,6 +27,16 @@
 	}
 }
 
+.dialog-container.chart-dialog{
+	width: 50%;
+
+	.dialog-body{
+		height: 500px;
+		width: 500px;
+		overflow: auto;
+	}
+}
+
 .chart-editor{
 
 	> .inner{
@@ -37,15 +47,18 @@
 
 	.panel{
 		position: absolute;	
-		border: thin solid black;
 	}
 
 	.left.panel{
-		min-width: 300px;
-		width: 300px;
+		min-width: 50px;
+		width: 50px;
 	}
 
 	.right.panel{
+
+		.chart-wrapper{
+			height: 400px;
+		}
 	}
 }
 
@@ -222,6 +235,20 @@
 		
 		&.selected {
 			display: inherit;
+		}
+	}
+
+	.field-picker{
+		text-align: center;
+	}
+
+	.config-form-wrapper{
+
+		.config-form{
+			> .inner{
+				margin-left: auto;
+				margin-right: auto;
+			}
 		}
 	}
 }

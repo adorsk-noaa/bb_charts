@@ -1,14 +1,26 @@
 <div class="inner">
-	<form class="config-form">
-		<% if (model.get('type')) { %>
-		<% if (model.get('type') == 'numerical' ) { %>
-		<div class="numerical">
-			<label for="<% print ([model.id, 'min'].join('-')); %>">min: </label><input id="<% print ([model.id, 'min'].join('-')); %>" name="min" type="text" value="<% print(model.get('min')); %>">
-			<label for="<% print ([model.id, 'max'].join('-')); %>">max: </label><input id="<% print ([model.id, 'max'].join('-')); %>" name="max" type="text" value="<% print(model.get('max')); %>">
-		</div>
-		<% } else {%>
-		<div class="unconfigurable">No configuration options for this field.</div>
-		<% } %>
-		<% } %>
-	</form>
+	<div class="config-form-wrapper">
+		<form class="config-form">
+			<div class="inner">
+				<% if (model.get('type')) { %>
+				<% if (model.get('type') == 'numerical' ) { %>
+				<div class="numerical field-row">
+					<div class="field-cell">
+						<label for="<% print ([model.id, 'min'].join('-')); %>">min: </label><input id="<% print ([model.id, 'min'].join('-')); %>" name="min" type="text" value="<% print(model.get('min')); %>">
+					</div>
+					<div class="field-cell">
+						<label for="<% print ([model.id, 'max'].join('-')); %>">max: </label><input id="<% print ([model.id, 'max'].join('-')); %>" name="max" type="text" value="<% print(model.get('max')); %>">
+					</div>
+				</div>
+				<% } else {%>
+				<div class="field-row unconfigurable">
+					<div class="field-cell">
+						No configuration options for this field.
+					</div>
+				</div>
+				<% } %>
+				<% } %>
+			</div>
+		</form>
+	</div>
 </div class="inner">
