@@ -1,254 +1,180 @@
 @import "rounded-corners.less";
+@import "button.less";
 
-.node {
+@link_primary: #11c;
+@link_secondary: #4272db;
+@chrome_primary: #bcf;
+@chrome_secondary: #e3e9ff;
+@chrome_dark: #828eb2;
+@fill_primary: #ebeef8;
+@fill_secondary: #f2f2f2;
+@fill_editable: #ffffd6;
+@selected_primary: #68e;
+@selected_highlight: #FF6A00;
+@green_primary: #282;
+@green_secondary: #3d3;
+@notification_primary: #fe8;
+@faint_grey: #ddd;
+@light_grey: #999;
+@metadata_grey: #777;
+@near_black: #444;
+@dialog_frame: #3a5774;
+@dialog_border: #c1d9ff;
+@dialog_header: #e0edfe;
+@dialog_footer: #eee;
 
-	margin-bottom: 1em;
-	font-size: 66%;
+@padding_tighter: 3px;
+@padding_tight: 5px;
+@padding_normal: 7px;
+@padding_loose: 10px;
+@padding_looser: 15px;
 
-	.data{
-
-		.bar{
-			border-color: blue;
-			border-style: solid;
-			background-color: blue;
-			height: 1em;
-		}
-
-	}
-
-	&.depth0 {
-	}
-
-	&.depth1 {
-		border-bottom: thin solid black;
-	}
-
-	&.depth2 {
-	}
-}
-
-.dialog-container.chart-dialog{
-	width: 50%;
-
-	.dialog-body{
-		height: 500px;
-		width: 500px;
-		overflow: auto;
-	}
-}
-
+@right-padding: 25px;
 .chart-editor{
 
+	height: 500px;
+	width: 500px;
+	border: thin solid black;
+
 	> .inner{
+		position: relative;
+		margin: 50px;
+		width: 400px;
+		overflow: auto;
+
+		> .body {
+			height: 360px;
+			width: 400px;
+		}
+	}
+
+	.header {
+		width: 100%;
+		height: 40px;
+		> .inner{
+			text-align: right;
+			font-family: sans;
+			padding-top:5px;
+			padding-right: @right-padding;
+		}
+	}
+
+	.quantity-field-container, .category-field-container{
+		background: @chrome_secondary;  
+		border-style: solid @chrome_primary;
+		border-color: @chrome_primary;
+
+		> .title-container{
+			cursor: pointer;
+		}
+	}
+
+
+	.left-panel{
+		left: 0;
+		height: 360px;
+		position: absolute;
+		z-index: 0;
+		width: 200px;
+		min-width: 40px;
+		max-width: 200px;
+
+
+		.category-field-container{
+			.rounded_corners_left(7px);
+			margin: 0 5px 7px;
+			border_width: 1px 0 1px 1px;
+
+			height: 320px;
+			width: 200px;
+			position: relative;
+
+			> .title-container{
+				position: absolute;
+				left: 0;
+				width: 40px;				
+				height: 100%;
+
+				> .rotate-container{
+					position: absolute;
+					left: 0;
+					bottom: 0;
+					width: 320px;
+					height: 40px;
+
+					> .title{
+						height: 100%;
+						width: 100%;
+						text-align: center;
+						padding: 7px 0;
+					}
+				}
+			}
+
+			.body-container{
+				position: absolute;
+				left: 40px;
+				height: 100%;
+				background-color: white;
+				padding-left: 5px;
+			}
+
+		}
+
+	}
+
+	.right-panel{
+		width: 360px;
+		left: 40px;
 		height: 100%;
-		width: 100%;
-		position: relative;
-	}
+		position: absolute;
+		z-index: 1;
+		background-color: white;
 
-	.panel{
-		position: absolute;	
-	}
-
-	.left.panel{
-		min-width: 50px;
-		width: 50px;
-	}
-
-	.right.panel{
-
-		.chart-wrapper{
-			height: 400px;
-		}
-	}
-}
-
-.chart {
-
-	@label-width: 5em;
-
-	padding: 3em;
-
-	> .inner{
-		height: 200px;
-		width: 100%;
-		position: relative;
-
-		.chart-image-wrapper{
-			width: 100%;
-			position: absolute;
-			top: 0;
-			bottom: 1.5em;
-			overflow-y: auto;
-			border-bottom: thin solid black;
-			> .inner{
-			}
-		}
-
-		.chart-grid-wrapper{
-			pointer-events: none;
-			position: absolute;
-			top: 0;
-			height: 100%;
-			width: 100%;
-
-			> .inner{
-				margin-left: @label-width;
-				margin-right: 0;
-				height: 100%;
-			}
-		}
-
-		@axis_height: 1.5em;
-		.chart-axis-wrapper{
-			position: absolute;
-			bottom: -@axis_height;
-			height: @axis_height;
-			width: 100%;
-
-			> .inner{
-				margin-left: @label-width;
-				margin-right: 0;
-				height: 100%;
-			}
-		}
-	}
-
-	.chart-image{
-		width: 100%;
-		@row_height: 1;
-		@row_height_em: 1em;
-
-		.row-wrapper{
-			height: @row_height_em;
-			width: 100%;
-			margin-bottom: .4 * @row_height_em;
-		}
-
-		.row {
+		> .inner{
 			height: 100%;
 			width: 100%;
 			position: relative;
+		}
 
-			&:hover {
-				background-color: white;
-				border-width: thin 0;
-				border-color: black;
-				border-style: solid;
-			}
-
-			/* Tooltip Styling */
-			cursor: pointer; text-decoration: none;
+		.chart{
+			border: thin solid black;
+			padding-right: @right-padding;
+			height: 80%;
+		}
 
 
-			> .label{
-				position: absolute;
-				top: 0;
-				left: 0;
-				height: 100%;
-				width: @label-width;
-				.text{
-					width: @label-width;
-					text-overflow: ellipsis;
-					overflow: hidden;
-					white-space: nowrap;
-				}
-			}
-			> .bar {
-				position: absolute;
-				top: 0;
-				left: @label-width;
-				right: 0;
-				height: 100%;
-				display: table-cell;
+		.quantity-field-container{
+			.rounded_corners_bottom(7px);
+			border_width: 1px 0 1px 1px;
+			padding: 7px 0;
+			overflow: hidden;
+
+			> .body-container{
+				min-height: 0px;
+				max-height: 250px;
+				height: 0px;
+				padding: 0 5px;
 				overflow: hidden;
-				vertical-align: middle;
-
-				.image-wrapper{
-					position: absolute;
-					top: 15%;
-					bottom: 15%;
-					width: 100%;
-				}
-
-				.image {
-					height: 100%;
-					position: absolute;
-					background-color: blue;
-					border-width: 0px 2px;
-					border-style: solid;
-					border-color: black;
-				}
-
+				background: white;
 			}
-		}
 
-	}
-
-	.chart-grid{
-		height: 100%;
-		width: 100%;
-		position: relative;
-
-		> .line{
-			position: absolute;
-			top: 0px;
-			height: 100%;
-			border-right: thin solid gray;
-
-			> .label {
-				position: absolute;
-				bottom: 0px;
-				right: .2em;
+			> .title-container{
+				text-align: center;
 			}
+
 		}
 	}
 
-	.chart-axis{
-		height: 100%;
-		width: 100%;
-		position: relative;
 
-		> .axis-input-wrapper{
-			position: absolute;
-			top: 0px;
-			height: 100%;
-			border-right: thin solid gray;
-
-			> .axis-input {
-				position: absolute;
-				bottom: 0px;
-				right: .2em;
-			}
-		}
-	}
 }
 
-.info-dialog{
-	td {
-		vertical-align: top;
-	}
-}
+.rotate-270{
+	-moz-transform: rotate(270deg) translate(0,100%);
+	-moz-transform-origin: 0% 100%;
+	-o-transform: rotate(270deg) translate(0, 100%);
+	-o-transform-origin: 0% 100%;
+	-webkit-transform: rotate(270deg) translate(0, 100%);
+	-webkit-transform-origin: 0% 100%;
 
-.single-field-selector{
-	.field {
-		display: none;
-		
-		&.selected {
-			display: inherit;
-		}
-	}
-
-	.field-picker{
-		text-align: center;
-	}
-
-	.config-form-wrapper{
-
-		.config-form{
-			> .inner{
-				margin-left: auto;
-				margin-right: auto;
-			}
-		}
-	}
 }
