@@ -32,31 +32,65 @@
 @right-padding: 25px;
 .chart-editor{
 
-	height: 500px;
-	width: 500px;
-	border: thin solid black;
+	@lp-maxw: 200px;
+	@lp-minw: 40px;
+	@left-padding: @lp-maxw;
+	@right-padding: 10px;
+	@qf-maxh: 200px;
+	@qf-minh: 40px;
+	@bottom-padding: @qf-maxh;
 
-	> .inner{
-		position: relative;
-		margin: 50px;
-		width: 400px;
+	height: 600px;
+	width: 600px;
+	border: thin solid black;
+	padding: 25px;
+
+	> .body-container{
+		border: thin solid green;
+		width: 100%;
+		height: 100%;
 		overflow: auto;
 
-		> .body {
-			height: 360px;
-			width: 400px;
+		> .body{
+			height: 100%;
+			width: 100%;
+			position: relative;
 		}
+
 	}
 
-	.header {
-		width: 100%;
-		height: 40px;
-		> .inner{
-			text-align: right;
-			font-family: sans;
-			padding-top:5px;
-			padding-right: @right-padding;
+	.panel{
+		height: 100%;
+		position: relative;
+
+		> .header-container{
+			position: absolute;
+			top: 0;
+			height: 2em;
+			width: 100%;
 		}
+
+		> .body-fill-container{
+			position: absolute;
+			top: 2em;
+			bottom: @bottom-padding + @qf-minh;
+			width: 100%;
+
+			> .body-container{
+				height: 100%;
+				width: 100%;
+				border: thin solid black;
+			}
+		}
+
+		> .footer-container{
+			position: absolute;
+			height: @qf-minh;
+			width: 100%;
+			bottom: @bottom-padding;
+		}
+
+
 	}
 
 	.quantity-field-container, .category-field-container{
@@ -71,14 +105,12 @@
 
 
 	.left-panel{
-		left: 0;
-		height: 360px;
+		left: @left-padding;
 		position: absolute;
 		z-index: 0;
-		width: 200px;
-		min-width: 40px;
-		max-width: 200px;
-
+		width: @lp-maxw;
+		min-width: @lp-minw;
+		max-width: @lp-maxw;
 
 		.category-field-container{
 			.rounded_corners_left(7px);
@@ -123,9 +155,10 @@
 
 	}
 
+
 	.right-panel{
-		width: 360px;
-		left: 40px;
+		left: @left-padding + @lp-minw;
+		right: @right-padding;
 		height: 100%;
 		position: absolute;
 		z-index: 1;
@@ -139,10 +172,7 @@
 
 		.chart{
 			border: thin solid black;
-			padding-right: @right-padding;
-			height: 80%;
 		}
-
 
 		.quantity-field-container{
 			.rounded_corners_bottom(7px);

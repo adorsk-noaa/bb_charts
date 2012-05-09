@@ -41,13 +41,18 @@ function($, Backbone, _, ui, _s, template){
 		expandContractLeftPanel: function(opts){
 			var expand = opts.expand;
 			var $lp_el = $('.left-panel', this.el);
-			var $rp_el = $('.right-panel', this.el);
-			var width_attr = (expand) ? 'maxWidth' : 'minWidth';
+
+			var original_left = parseInt($lp_el.css('left'), 10);
+			var delta = parseInt($lp_el.css('maxWidth'),10) - parseInt($lp_el.css('minWidth'),10);
+			if (! expand){
+				delta = -1 * delta;
+			}
+			var target_left = original_left - delta;
 
 			$lp_el.addClass('changing');
-			$rp_el.animate(
+			$lp_el.animate(
 					{
-						left: $lp_el.css(width_attr)
+						left: target_left,
 					},
 					{
 						complete: function(){
