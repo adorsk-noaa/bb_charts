@@ -41,18 +41,22 @@ function($, Backbone, _, ui, _s, template){
 		expandContractLeftPanel: function(opts){
 			var expand = opts.expand;
 			var $lp_el = $('.left-panel', this.el);
+			var $rp_el = $('.right-panel', this.el);
 
-			var original_left = parseInt($lp_el.css('left'), 10);
+			var original_left = parseInt($rp_el.css('left'), 10);
 			var delta = parseInt($lp_el.css('maxWidth'),10) - parseInt($lp_el.css('minWidth'),10);
 			if (! expand){
 				delta = -1 * delta;
 			}
-			var target_left = original_left - delta;
+			var target_left = original_left + delta;
+			var original_right = parseInt($rp_el.css('right'),10);
+			var target_right = original_right - delta; 
 
 			$lp_el.addClass('changing');
-			$lp_el.animate(
+			$rp_el.animate(
 					{
 						left: target_left,
+						right: target_right
 					},
 					{
 						complete: function(){
@@ -72,7 +76,16 @@ function($, Backbone, _, ui, _s, template){
 			var expand = opts.expand;
 			var $qfc_el = $('.quantity-field-container', this.el);
 			var $qfb_el = $('.body-container', $qfc_el);
+			var $bc_el = $(this.el).children('.body-container');
 			var height_attr = (expand) ? 'maxHeight' : 'minHeight';
+
+			var original_height = parseInt($qfb_el.css('height'),10);
+			var delta = parseInt($qfb_el.css('maxHeight'),10) - parseInt($qfb_el.css('minHeight'),10);
+			if (! expand){
+				delta = -1 * delta;
+			}
+			var target_height = original_height + delta;
+			var target_scrolltop = $bc_el.scrollTop() + delta;
 
 			$qfb_el.addClass('changing');
 			$qfb_el.animate(
@@ -91,6 +104,11 @@ function($, Backbone, _, ui, _s, template){
 						}
 					}
 			);
+
+			$bc_el.animate({
+				scrollTop: target_scrolltop
+			});
+			
 		}
 
 	});

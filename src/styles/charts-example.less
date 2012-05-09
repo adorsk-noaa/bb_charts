@@ -32,14 +32,6 @@
 @right-padding: 25px;
 .chart-editor{
 
-	@lp-maxw: 200px;
-	@lp-minw: 40px;
-	@left-padding: @lp-maxw;
-	@right-padding: 10px;
-	@qf-maxh: 200px;
-	@qf-minh: 40px;
-	@bottom-padding: @qf-maxh;
-
 	height: 600px;
 	width: 600px;
 	border: thin solid black;
@@ -73,7 +65,7 @@
 		> .body-fill-container{
 			position: absolute;
 			top: 2em;
-			bottom: @bottom-padding + @qf-minh;
+			bottom: 3em;
 			width: 100%;
 
 			> .body-container{
@@ -85,9 +77,9 @@
 
 		> .footer-container{
 			position: absolute;
-			height: @qf-minh;
+			height: 2em;
 			width: 100%;
-			bottom: @bottom-padding;
+			bottom: 1em;
 		}
 
 
@@ -102,6 +94,10 @@
 			cursor: pointer;
 		}
 	}
+
+	@lp-maxw: 200px;
+	@lp-minw: 40px;
+	@left-padding: 10px;
 
 
 	.left-panel{
@@ -154,7 +150,6 @@
 		}
 
 	}
-
 
 	.right-panel{
 		left: @left-padding + @lp-minw;
