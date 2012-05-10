@@ -4,9 +4,11 @@ define([
 	"use!underscore",
 	"use!ui",
 	"_s",
+	"./single_field_selector",
+	"./quantity_field",
 	"text!./templates/chart_editor.html"
 		],
-function($, Backbone, _, ui, _s, template){
+function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, template){
 
 	var ChartEditorView = Backbone.View.extend({
 
@@ -26,6 +28,31 @@ function($, Backbone, _, ui, _s, template){
 			this.$table = $(this.el).children('table.body');
 			this.$cfc = $('.category-field-container', this.el);
 			this.$qfc = $('.quantity-field-container', this.el);
+
+			var ds = this.model.get('datasource');
+			var schema = ds.get('schema');
+
+			// Add category field selector.
+			var category_field_model = new Backbone.Model({
+				field_definitions: schema.get('category_fields')
+			});
+			this.model.set('category_field', category_field_model);
+
+			var category_field_selector = new SingleFieldSelectorView({
+				el: $('.category-field', this.el),
+				model: category_field_model
+			});
+			
+			// Add value field selector.
+			var quantity_field_model = new Backbone.Model({
+			field_definitions: schema.get('quantity_fields')
+			});
+			this.model.set('quantity_field', quantity_field_model);
+			var quantity_field_selector = new SingleFieldSelectorView({
+				el: $('.quantity-field', this.el),
+				model: quantity_field_model,
+				fieldViewClass: QuantityFieldView
+			});
 		},
 
 		resize: function(){

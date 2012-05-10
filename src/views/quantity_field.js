@@ -4,18 +4,18 @@ define([
 	"use!underscore",
 	"use!ui",
 	"_s",
-	"text!./templates/value_field.html"
+	"text!./templates/quantity_field.html"
 		],
 function($, Backbone, _, ui, _s, template){
 
-	var ValueFieldView = Backbone.View.extend({
+	var QuantityFieldView = Backbone.View.extend({
 
 		events: {
 			'change .config-form': 'onConfigFormChange'
 		},
 
 		initialize: function(opts){
-			$(this.el).addClass('field value-field');
+			$(this.el).addClass('field quantity-field');
 			this.render();
 		},
 
@@ -33,6 +33,6 @@ function($, Backbone, _, ui, _s, template){
 
 	});
 
-	return ValueFieldView;
+	return QuantityFieldView;
 });
 		
