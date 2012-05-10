@@ -18,61 +18,113 @@ function($, Backbone, _, ui, _s, template){
 		initialize: function(){
 			$(this.el).addClass('chart-editor');
 			this.render();
+			this.$table = $(this.el).children('table.body');
+			this.$cfc = $('.category-field-container', this.el);
+			this.$qfc = $('.quantity-field-container', this.el);
 		},
 
 		render: function(){
 			$(this.el).html(_.template(template, {}));
-			this.$lp_el = $('.left-panel', this.el);
-			this.$qfc_el = $('.quantity-field-container', this.el);
+		},
+
+		resize: function(){
+			var $c = this.$table.parent();
+			this.$table.css('width', $c.css('width'));
+			this.$table.css('height', $c.css('height'));
 		},
 
 		toggleCategoryField: function(){
-			if (! this.$lp_el.hasClass('changing')){
-				this.expandContractLeftPanel({expand: ! this.$lp_el.hasClass('expanded')});
+			if (! this.$cfc.hasClass('changing')){
+				this.expandContractFieldContainer({
+					expand: ! this.$cfc.hasClass('expanded'),
+					field_container: this.$cfc,
+					dimension: 'width'
+				});
 			}
 		},
 
 		toggleQuantityField: function(){
-			if (! this.$qfc_el.hasClass('changing')){
-				this.expandContractQuantityField({expand: ! this.$qfc_el.hasClass('expanded')});
+			if (! this.$qfc.hasClass('changing')){
+				this.expandContractFieldContainer({
+					expand: ! this.$qfc.hasClass('expanded'),
+					field_container: this.$qfc,
+					dimension: 'height'
+				});
 			}
 		},
 
-		expandContractLeftPanel: function(opts){
+		expandContractFieldContainer: function(opts){
+			var _this = this;
 			var expand = opts.expand;
-			var $lp_el = $('.left-panel', this.el);
-			var $rp_el = $('.right-panel', this.el);
+			var $fc = opts.field_container;
+			var dim = opts.dimension;
 
-			var original_left = parseInt($rp_el.css('left'), 10);
-			var delta = parseInt($lp_el.css('maxWidth'),10) - parseInt($lp_el.css('minWidth'),10);
+			// Calculate how much to change dimension.
+			var delta = parseInt($fc.css('max' + _s.capitalize(dim)), 10) - parseInt($fc.css('min' + _s.capitalize(dim)),10);
 			if (! expand){
 				delta = -1 * delta;
 			}
-			var target_left = original_left + delta;
-			var original_right = parseInt($rp_el.css('right'),10);
-			var target_right = original_right - delta; 
 
-			$lp_el.addClass('changing');
-			$rp_el.animate(
-					{
-						left: target_left,
-						right: target_right
-					},
+			// Animate field container dimension.
+			$fc.addClass('changing');
+			var fc_dim_opts = {};
+			fc_dim_opts[dim] = parseInt($fc.css(dim),10) + delta;
+			$fc.animate(
+					fc_dim_opts,
 					{
 						complete: function(){
-							$lp_el.removeClass('changing');
+							$fc.removeClass('changing');
 							if (expand){
-								$lp_el.addClass('expanded')
+								$fc.addClass('expanded')
 							}
 							else{
-								$lp_el.removeClass('expanded')
+								$fc.removeClass('expanded')
 							}
 						}
 					}
 			);
+
+			// Animate cell dimension.
+			$fc.parent().animate(fc_dim_opts);
+			
+
+			// Animate table dimension.
+			var table_dim_opts = {};
+			table_dim_opts[dim] = parseInt(this.$table.css(dim),10) + delta;
+			this.$table.animate(table_dim_opts);
 		},
 
 		expandContractQuantityField: function(opts){
+			var _this = this;
+			var expand = opts.expand;
+			var delta = parseInt(this.$qfc.css('maxHeight'),10) - parseInt(this.$cfc.css('minHeight'),10);
+			if (! expand){
+				delta = -1 * delta;
+			}
+
+			this.$cfc.addClass('changing');
+			this.$cfc.animate(
+					{
+						width: parseInt(this.$cfc.css('width'),10) + delta
+					},
+					{
+						complete: function(){
+							_this.$cfc.removeClass('changing');
+							if (expand){
+								_this.$cfc.addClass('expanded')
+							}
+							else{
+								_this.$cfc.removeClass('expanded')
+							}
+						}
+					}
+			);
+			this.$table.animate(
+					{
+						width: parseInt(this.$table.css('width'),10) + delta
+					}
+			);
+
 			var expand = opts.expand;
 			var $qfc_el = $('.quantity-field-container', this.el);
 			var $qfb_el = $('.body-container', $qfc_el);

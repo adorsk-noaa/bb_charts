@@ -29,63 +29,38 @@
 @padding_loose: 10px;
 @padding_looser: 15px;
 
-@right-padding: 25px;
+@field_tab_h: 40px;
+
 .chart-editor{
 
-	height: 600px;
-	width: 600px;
+	display: inline-block;
 	border: thin solid black;
-	padding: 25px;
+	position: relative;
 
-	> .body-container{
-		border: thin solid green;
-		width: 100%;
-		height: 100%;
-		overflow: auto;
-
-		> .body{
-			height: 100%;
-			width: 100%;
-			position: relative;
-		}
-
-	}
-
-	.panel{
-		height: 100%;
-		position: relative;
-
-		> .header-container{
-			position: absolute;
-			top: 0;
-			height: 2em;
-			width: 100%;
-		}
-
-		> .body-fill-container{
-			position: absolute;
-			top: 2em;
-			bottom: 3em;
-			width: 100%;
-
-			> .body-container{
-				height: 100%;
-				width: 100%;
-				border: thin solid black;
+	@tw: 600px;
+	> .table{
+		border-spacing: 0;
+		width: @tw;
+		height: 600px;
+		> .row {
+			> .cell{
 			}
+			height: 100%;
 		}
 
-		> .footer-container{
-			position: absolute;
-			height: 2em;
-			width: 100%;
-			bottom: 1em;
+		.top-row, .bottom-row{
+			height: @field_tab_h;
 		}
 
+		.middle-row .left-column{
+			width: @field_tab_h;
+		}
 
 	}
 
-	.quantity-field-container, .category-field-container{
+
+	.quantity-field-tab, .category-field-tab{
+
 		background: @chrome_secondary;  
 		border-style: solid @chrome_primary;
 		border-color: @chrome_primary;
@@ -95,40 +70,37 @@
 		}
 	}
 
-	@lp-maxw: 200px;
-	@lp-minw: 40px;
-	@left-padding: 10px;
 
+	.category-field-container{
+		min-width: @field_tab_h;
+		max-width: 200px;
+		width: @field_tab_h;
+		height: 100%;
+		overflow: hidden;
+		position: relative;
 
-	.left-panel{
-		left: @left-padding;
-		position: absolute;
-		z-index: 0;
-		width: @lp-maxw;
-		min-width: @lp-minw;
-		max-width: @lp-maxw;
-
-		.category-field-container{
-			.rounded_corners_left(7px);
-			margin: 0 5px 7px;
-			border_width: 1px 0 1px 1px;
-
-			height: 320px;
+		.category-field-tab{
+			position: absolute;
+			left: 0;
+			top: 0;
 			width: 200px;
-			position: relative;
+			height: 100%;
+			.rounded_corners_left(7px);
+			border_width: 1px 0 1px 1px;
 
 			> .title-container{
 				position: absolute;
 				left: 0;
-				width: 40px;				
+				width: @field_tab_h;				
 				height: 100%;
 
 				> .rotate-container{
 					position: absolute;
 					left: 0;
 					bottom: 0;
-					width: 320px;
-					height: 40px;
+					width: 300px;
+					height: @field_tab_h;
+					overflow: hidden;
 
 					> .title{
 						height: 100%;
@@ -141,39 +113,44 @@
 
 			.body-container{
 				position: absolute;
-				left: 40px;
+				left: @field_tab_h;
 				height: 100%;
-				background-color: white;
+				background-color: blue;
 				padding-left: 5px;
 			}
-
 		}
-
 	}
 
-	.right-panel{
-		left: @left-padding + @lp-minw;
-		right: @right-padding;
-		height: 100%;
-		position: absolute;
-		z-index: 1;
-		background-color: white;
 
-		> .inner{
-			height: 100%;
-			width: 100%;
-			position: relative;
-		}
+	.chart-container{
+
+		height: 100%;
+		width: 100%;
 
 		.chart{
 			border: thin solid black;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
 		}
+	}
 
-		.quantity-field-container{
+	.quantity-field-container{
+		min-height: @field_tab_h;
+		max-height: 200px;
+		height: @field_tab_h;
+		width: 100%;
+		overflow: hidden;
+		position: relative;
+
+		.quantity-field-tab{
+			position: absolute;
+			left: 0;
+			top: 0;
+			height: 200px;
+			width: 100%;
 			.rounded_corners_bottom(7px);
 			border_width: 1px 0 1px 1px;
-			padding: 7px 0;
-			overflow: hidden;
 
 			> .body-container{
 				min-height: 0px;
@@ -187,10 +164,9 @@
 			> .title-container{
 				text-align: center;
 			}
-
 		}
-	}
 
+	}
 
 }
 
