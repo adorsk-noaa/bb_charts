@@ -18,19 +18,27 @@ function($, Backbone, _, ui, _s, template){
 		initialize: function(){
 			$(this.el).addClass('chart-editor');
 			this.render();
-			this.$table = $(this.el).children('table.body');
-			this.$cfc = $('.category-field-container', this.el);
-			this.$qfc = $('.quantity-field-container', this.el);
+			this.resize();
 		},
 
 		render: function(){
 			$(this.el).html(_.template(template, {}));
+			this.$table = $(this.el).children('table.body');
+			this.$cfc = $('.category-field-container', this.el);
+			this.$qfc = $('.quantity-field-container', this.el);
 		},
 
 		resize: function(){
 			var $c = this.$table.parent();
 			this.$table.css('width', $c.css('width'));
 			this.$table.css('height', $c.css('height'));
+			this.resizeVerticalTab();
+		},
+
+		resizeVerticalTab: function(){
+			var $rc = $('.rotate-container', this.el);
+			$rc.css('width', $rc.parent().height());
+			$rc.css('height', $rc.parent().width());
 		},
 
 		toggleCategoryField: function(){
