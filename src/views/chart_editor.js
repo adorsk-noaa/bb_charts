@@ -68,7 +68,7 @@ function($, Backbone, _, ui, _s, template){
 			var dim = opts.dimension;
 
 			// Calculate how much to change dimension.
-			var delta = parseInt($fc.css('max' + _s.capitalize(dim)), 10) - parseInt($fc.css('min' + _s.capitalize(dim)),10);
+			var delta = parseInt($fc.css('max' + _s.capitalize(dim)), 10) - parseInt($fc.css('min' + _s.capitalize(dim)), 10);
 			if (! expand){
 				delta = -1 * delta;
 			}

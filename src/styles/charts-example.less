@@ -30,6 +30,7 @@
 @padding_looser: 15px;
 
 @field_tab_h: 40px;
+@tab_bw: 1px;
 
 .chart-editor{
 
@@ -52,6 +53,10 @@
 			height: @field_tab_h;
 		}
 
+		.top-row{
+			background: @faint_grey;
+		}
+
 		.middle-row .left-column{
 			width: @field_tab_h;
 		}
@@ -65,32 +70,34 @@
 
 	.quantity-field-tab, .category-field-tab{
 
-		background: @chrome_secondary;  
-		border-style: solid @chrome_primary;
-		border-color: @chrome_primary;
+		background: @chrome_primary;  
 
 		> .title-container{
 			cursor: pointer;
 		}
+
+		> .body-container{
+			border-color: @chrome_secondary;
+			border-style: solid;
+		}
 	}
 
-
 	.category-field-container{
+		@body_w: 160px;
 		min-width: @field_tab_h;
-		max-width: 200px;
+		max-width: @field_tab_h + @body_w;
 		width: @field_tab_h;
 		height: 100%;
 		overflow: hidden;
 		position: relative;
 
 		.category-field-tab{
+			.rounded_corners_left(7px);
 			position: absolute;
 			left: 0;
+			right: 0;
 			top: 0;
-			width: 200px;
-			height: 100%;
-			.rounded_corners_left(7px);
-			border_width: 1px 0 1px 1px;
+			bottom: 0;
 
 			> .title-container{
 				position: absolute;
@@ -102,8 +109,6 @@
 					position: absolute;
 					left: 0;
 					bottom: 0;
-					width: 300px;
-					height: @field_tab_h;
 					overflow: hidden;
 
 					> .title{
@@ -118,9 +123,20 @@
 			.body-container{
 				position: absolute;
 				left: @field_tab_h;
-				height: 100%;
-				background-color: blue;
+				right: 0;
+				top: @tab_bw;
+				bottom: @tab_bw;
 				padding-left: 5px;
+				border-width: 0;
+
+				.body{
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: @body_w;
+					height: 100%;
+					background: white;
+				}
 			}
 		}
 	}
@@ -140,34 +156,50 @@
 	}
 
 	.quantity-field-container{
+		@body_h: 160px;
 		min-height: @field_tab_h;
-		max-height: 200px;
+		max-height: @field_tab_h + @tab_bw + @body_h;
 		height: @field_tab_h;
 		width: 100%;
 		overflow: hidden;
 		position: relative;
 
 		.quantity-field-tab{
+			.rounded_corners_bottom(7px);
 			position: absolute;
 			left: 0;
+			right: 0;
 			top: 0;
-			height: 200px;
-			width: 100%;
-			.rounded_corners_bottom(7px);
-			border_width: 1px 0 1px 1px;
-
-			> .body-container{
-				min-height: 0px;
-				max-height: 250px;
-				height: 0px;
-				padding: 0 5px;
-				overflow: hidden;
-				background: white;
-			}
+			bottom: 0;
 
 			> .title-container{
+				position: absolute;
 				text-align: center;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: @field_tab_h;
 			}
+
+			> .body-container{
+				position: absolute;
+				top: @field_tab_h;
+				left: @tab_bw;
+				right: @tab_bw;
+				bottom: 7px;
+				overflow: hidden;
+				border-width: 0 0;
+				
+				.body{
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: @body_h;	
+					background: white;
+				}
+			}
+
 		}
 
 	}
