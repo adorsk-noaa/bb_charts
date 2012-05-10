@@ -6,9 +6,10 @@ define([
 	"_s",
 	"./single_field_selector",
 	"./quantity_field",
+	"./raw_chart",
 	"text!./templates/chart_editor.html"
 		],
-function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, template){
+function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, RawChartView, template){
 
 	var ChartEditorView = Backbone.View.extend({
 
@@ -21,6 +22,20 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, tem
 			$(this.el).addClass('chart-editor');
 			this.render();
 			this.resize();
+
+			var ds = this.model.get('datasource');
+			var schema = ds.get('schema');
+
+			// Fetch new data when the datasource query changes.
+			ds.get('query').on('change', ds.fetch, ds);
+			
+			// Handle changes in datasource data.
+			ds.on('change:data', this.onDatasourceDataChange, this);
+			
+			// Change the datasource query when the field selectors change.
+			this.model.get('category_field').on('change:selected_field', this.onCategoryFieldChange, this);
+			this.model.get('quantity_field').on('change:selected_field', this.onQuantityFieldChange, this);
+			
 		},
 
 		render: function(){
@@ -52,6 +67,12 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, tem
 				el: $('.quantity-field', this.el),
 				model: quantity_field_model,
 				fieldViewClass: QuantityFieldView
+			});
+
+			// Add chart view.
+			var chart_view = new RawChartView({
+				el: $('.chart', this.el),
+				model: this.model.get('chart')
 			});
 		},
 
@@ -196,6 +217,27 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, tem
 				scrollTop: target_scrolltop
 			});
 			
+		},
+
+		onCategoryFieldChange: function(){
+			$('.category_field', this.el).html(this.model.get('category_field').get('selected_field').get('label'));
+			this.updateDatasourceQuery()
+		},
+
+		onQuantityFieldChange: function(){
+			this.updateDatasourceQuery()
+		},
+
+		updateDatasourceQuery: function(){
+			this.model.get('datasource').get('query').set({
+				'CATEGORY_FIELDS': [this.model.get('category_field').get('selected_field')],
+				'VALUE_FIELDS': [this.model.get('quantity_field').get('selected_field')]
+			});
+		},
+
+		onDatasourceDataChange: function(){
+			console.log('onDatasourceDatachange');
+			this.model.get('chart').set('data', this.model.get('datasource').get('data'));
 		}
 
 	});
