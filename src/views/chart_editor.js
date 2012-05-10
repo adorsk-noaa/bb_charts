@@ -7,9 +7,10 @@ define([
 	"./single_field_selector",
 	"./quantity_field",
 	"./raw_chart",
+	"./flot_chart",
 	"text!./templates/chart_editor.html"
 		],
-function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, RawChartView, template){
+function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, RawChartView, FlotChartView, template){
 
 	var ChartEditorView = Backbone.View.extend({
 
@@ -22,6 +23,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			$(this.el).addClass('chart-editor');
 			this.render();
 			this.resize();
+			this.resizeStop();
 
 			var ds = this.model.get('datasource');
 			var schema = ds.get('schema');
@@ -70,7 +72,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			});
 
 			// Add chart view.
-			var chart_view = new RawChartView({
+			this.chart_view = new FlotChartView({
 				el: $('.chart', this.el),
 				model: this.model.get('chart')
 			});
@@ -83,10 +85,18 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			this.resizeVerticalTab();
 		},
 
+		resizeStop: function(){
+			this.resizeChart();
+		},
+
 		resizeVerticalTab: function(){
 			var $rc = $('.rotate-container', this.el);
 			$rc.css('width', $rc.parent().height());
 			$rc.css('height', $rc.parent().width());
+		},
+
+		resizeChart: function(){
+			this.chart_view.resize();
 		},
 
 		toggleCategoryField: function(){
