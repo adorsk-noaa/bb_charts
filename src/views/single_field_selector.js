@@ -38,9 +38,9 @@ function($, Backbone, _, ui, _s, CategoryFieldView, template){
 		},
 
 		addFieldDefinition: function(field_definition){
-			if (! this.rendered_field_definitions.hasOwnProperty(field_definition['id'])){
+			if (! this.rendered_field_definitions.hasOwnProperty(field_definition['field_id'])){
 
-				var field_option = $(_s.sprintf('<option value="%s">%s</option>', field_definition['id'], field_definition['label']));
+				var field_option = $(_s.sprintf('<option value="%s">%s</option>', field_definition['field_id'], field_definition['label']));
 				$('.field-picker-select', this.el).append(field_option);
 
 				var field_model = new Backbone.Model(field_definition);
@@ -48,8 +48,8 @@ function($, Backbone, _, ui, _s, CategoryFieldView, template){
 				var field_view = this.getFieldView(field_model);
 				$('.field-panels', this.el).append(field_view.el);
 
-				this.rendered_field_definitions[field_definition['id']] = {
-					'id': field_definition['id'],
+				this.rendered_field_definitions[field_definition['field_id']] = {
+					'field_id': field_definition['field_id'],
 					'option': field_option,
 					'model': field_model,
 					'view': field_view
@@ -58,11 +58,11 @@ function($, Backbone, _, ui, _s, CategoryFieldView, template){
 		},
 
 		removeFieldDefinition: function(field_definition){
-			if (this.rendered_fields.hasOwnProperty(field_definition['id'])){
+			if (this.rendered_fields.hasOwnProperty(field_definition['field_id'])){
 				rendered_field_definition.option.remove();
 				rendered_field_definition.view.remove();
 				rendered_field_definition.model = null;
-				delete this.rendered_field_definitions[field_definition['id']];
+				delete this.rendered_field_definitions[field_definition['field_id']];
 			}
 		},
 
@@ -80,7 +80,7 @@ function($, Backbone, _, ui, _s, CategoryFieldView, template){
 
 		onFieldSelectChange: function(e){
 			if (this.model.get('selected_field')){
-				var previously_selected_id = this.model.get('selected_field')['id'];
+				var previously_selected_id = this.model.get('selected_field').get('field_id');
 				$(this.rendered_field_definitions[previously_selected_id].view.el).removeClass('selected');
 			}
 			var selected_field_id = $('.field-picker-select option:selected', this.el).val();

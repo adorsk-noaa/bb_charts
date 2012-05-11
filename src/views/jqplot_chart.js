@@ -120,6 +120,9 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 		onDataChange: function(){
 			console.log('chart onDatachange');
 			this.render();
+		},
+
+		resize: function(){
 		}
 
 	});

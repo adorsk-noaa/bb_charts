@@ -7,10 +7,10 @@ define([
 	"./single_field_selector",
 	"./quantity_field",
 	"./raw_chart",
-	"./flot_chart",
+	"./jqplot_chart",
 	"text!./templates/chart_editor.html"
 		],
-function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, RawChartView, FlotChartView, template){
+function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, RawChartView, JqplotChartView, template){
 
 	var ChartEditorView = Backbone.View.extend({
 
@@ -19,7 +19,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			'click .quantity-field-container .title': 'toggleQuantityField'
 		},
 
-		initialize: function(){
+		initialize: function(opts){
 			$(this.el).addClass('chart-editor');
 			this.render();
 			this.resize();
@@ -29,7 +29,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			var schema = ds.get('schema');
 
 			// Fetch new data when the datasource query changes.
-			ds.get('query').on('change', ds.fetch, ds);
+			ds.get('query').on('change', ds.getData, ds);
 			
 			// Handle changes in datasource data.
 			ds.on('change:data', this.onDatasourceDataChange, this);
@@ -42,6 +42,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 
 		render: function(){
 			$(this.el).html(_.template(template, {}));
+
 			this.$table = $(this.el).children('table.body');
 			this.$cfc = $('.category-field-container', this.el);
 			this.$qfc = $('.quantity-field-container', this.el);
@@ -72,7 +73,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			});
 
 			// Add chart view.
-			this.chart_view = new FlotChartView({
+			this.chart_view = new JqplotChartView({
 				el: $('.chart', this.el),
 				model: this.model.get('chart')
 			});
@@ -239,10 +240,15 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 		},
 
 		updateDatasourceQuery: function(){
-			this.model.get('datasource').get('query').set({
-				'CATEGORY_FIELDS': [this.model.get('category_field').get('selected_field')],
-				'VALUE_FIELDS': [this.model.get('quantity_field').get('selected_field')]
+			var category_field = this.model.get('category_field').get('selected_field');
+			var quantity_field = this.model.get('quantity_field').get('selected_field');
+			var q = this.model.get('datasource').get('query');
+
+			q.set({
+				'GROUPING_FIELDS': (category_field) ? [category_field] : [],
+				'VALUE_FIELDS': (quantity_field) ? [quantity_field] : []
 			});
+
 		},
 
 		onDatasourceDataChange: function(){
