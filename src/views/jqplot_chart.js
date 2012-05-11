@@ -8,49 +8,87 @@ define([
 	"use!jqp_bar",
 	"use!jqp_cat_axis_renderer",
 	"./chart",
-	"../util/lumberjack_interpreter",
 		],
-function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView, LumberJackInterpreter){
+function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 
 	var JqPlotChartView = ChartView.extend({
 
 		initialize: function(opts){
 			$(this.el).addClass('jqplot-chart');
-			this.render();
+			this.initialRender();
+
+			//this.model.on('change:data', this.onDataChange, this);
+			this.model.on('change', this.render, this);
+		},
+
+		initialRender: function(){
+			$(this.el).html('foo');
 		},
 
 		render: function(){
+			var data = this.model.get('data');
+
+			// Do nothing if there is no data.
+			if (data.length < 1){
+				return;
+			}
 
 			// Render empty chart container.
 			$(this.el).html('<div class="body-container"><div class="body"></div></div>');
 			this.$b = $('.body-container > .body', this.el);
 
-			// Parse data into flat list.
-			var data = this.parseTreeData(this.model.get('data'));
-
 			// Set size of chart to be proportional to number of data points.
 			var row_height = this.$b.height() + 2;
 			var chart_height = data.length * row_height + row_height;
 			this.$b.css('minHeight', chart_height);
-			
-			
 
 			// Format data for jqplot.	
-			var filtered_series = [];
-			var unfiltered_series = [];
+			series = {};
 			var labels = [];
 			var i = 1;
+			var dmin, dmax, drange;
 			_.each(data, function(datum){
-				filtered_series.push([datum.data[0].value, i])
-				unfiltered_series.push([datum.data[0].value * 1.25, i])
+				_.each(datum.data, function(v, k){
+					if (! series.hasOwnProperty(k)){
+						series[k] = [];
+					}
+					var formatted_point = [v.value, i];
+					series[k].push(formatted_point);
+
+					// Update max/min.
+					if (! (dmin < v.value)){
+						dmin = v.value;	
+					}
+					if (! (dmax > v.value)){
+						dmax = v.value;
+					}
+				}, this);
+
 				labels.push(this.formatDatumLabel(datum));
 				i += 1;
 			}, this);
+			
+			drange = dmax - dmin;
+
+			// Break out series into list.
+			series_list = _.values(series) || [];
+
+			// configure xaxis.
+			var padding = .05;
+			var xaxis = {
+				padMin: padding,
+				padMax: padding,
+				tickOptions:{
+					formatter: this.formatQuantityLabel
+				},
+				min: (this.model.get('min') == null) ? dmin - padding * drange: this.model.get('min'),
+				max: (this.model.get('max') == null) ? dmax + padding * drange : this.model.get('max')
+			};
 
 			// Make plot.
 			bar_width = row_height * .5;
 			this.$b.jqplot(
-				[unfiltered_series, filtered_series],
+				series_list,
 				{
 				seriesDefaults:{
 					renderer:$.jqplot.BarRenderer,
@@ -61,26 +99,14 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView, 
 						fillToZero: true
 					}
 				},
-				series:[] , 
 				axes: {
 					yaxis: {
 						renderer: $.jqplot.CategoryAxisRenderer,
 						ticks: labels
 					},
-					xaxis: {
-						pad: 1.05,
-						tickOptions:{
-							formatter: this.formatQuantityLabel
-						}
-					}
+					xaxis: xaxis
 				}
 			});
-		},
-
-		parseTreeData: function(tree){
-			var interpreter = new LumberJackInterpreter();
-			var leafs = interpreter.parse(tree);
-			return leafs;
 		},
 
 		formatDatumLabel: function(datum){
@@ -89,6 +115,11 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView, 
 
 		formatQuantityLabel: function(formatString, value){
 			return value.toExponential(1);
+		},
+
+		onDataChange: function(){
+			console.log('chart onDatachange');
+			this.render();
 		}
 
 	});
