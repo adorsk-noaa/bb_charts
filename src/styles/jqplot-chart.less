@@ -1,0 +1,27 @@
+.jqplot-chart{
+
+	padding: 10px;
+	position: relative;
+	overflow: auto;
+
+	.chart-container{
+		position: absolute;
+		top: 0;
+		left: 0;
+		font-size: 12px;
+		height: 1em;
+		width: 100%;
+
+		.jqplot-yaxis{
+			z-index: 1;
+		}
+
+		.datum-label{
+			display: inline-block;
+			max-width: 10em;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			white-space: nowrap;
+		}
+	}
+}

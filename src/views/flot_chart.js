@@ -4,7 +4,7 @@ define([
 	"use!underscore",
 	"use!ui",
 	"_s",
-	"flot",
+	"use!flot",
 	"./chart"
 		],
 function($, Backbone, _, ui, _s, flot, ChartView){
