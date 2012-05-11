@@ -22,24 +22,28 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 		},
 
 		initialRender: function(){
-			$(this.el).html('foo');
+			this.$body_container = $('<div class="body-container"></div>');
+			$(this.el).append(this.$body_container);
 		},
 
 		render: function(){
 			var data = this.model.get('data');
 
 			// Do nothing if there is no data.
-			if (data.length < 1){
+			if ( ! (data instanceof Array) || (data.length < 1)){
 				return;
 			}
 
 			// Render empty chart container.
-			$(this.el).html('<div class="body-container"><div class="body"></div></div>');
-			this.$b = $('.body-container > .body', this.el);
+			this.$body_container.html('');
+			this.$b = $('<div class="body"></div>');
+			this.$body_container.append(this.$b);
 
-			// Set size of chart to be proportional to number of data points.
+			// Calculate row height from minimum initial body size, w/ some padding.
 			var row_height = this.$b.height() + 2;
-			var chart_height = data.length * row_height + row_height;
+
+			// Set chart height to max of (rows * row height, parent container height)
+			var chart_height = Math.max(data.length * row_height + row_height, this.$b.parent().height());
 			this.$b.css('minHeight', chart_height);
 
 			// Format data for jqplot.	
@@ -90,6 +94,7 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			this.$b.jqplot(
 				series_list,
 				{
+				title: 'Da Title',
 				seriesDefaults:{
 					renderer:$.jqplot.BarRenderer,
 					rendererOptions: {
@@ -123,6 +128,7 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 		},
 
 		resize: function(){
+			this.render();
 		}
 
 	});
