@@ -22,37 +22,42 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView, 
 		render: function(){
 
 			// Render empty chart container.
-			$(this.el).html('<div class="chart-container"></div>');
-			this.$cc = $(this.el).children('.chart-container');
+			$(this.el).html('<div class="body-container"><div class="body"></div></div>');
+			this.$b = $('.body-container > .body', this.el);
 
 			// Parse data into flat list.
 			var data = this.parseTreeData(this.model.get('data'));
 
 			// Set size of chart to be proportional to number of data points.
-			var row_height = this.$cc.height() + 2;
+			var row_height = this.$b.height() + 2;
 			var chart_height = data.length * row_height + row_height;
-			this.$cc.css('minHeight', chart_height);
+			this.$b.css('minHeight', chart_height);
 			
 			
 
 			// Format data for jqplot.	
-			var series = [];
+			var filtered_series = [];
+			var unfiltered_series = [];
 			var labels = [];
 			var i = 1;
 			_.each(data, function(datum){
-				series.push([datum.data[0].value, i])
+				filtered_series.push([datum.data[0].value, i])
+				unfiltered_series.push([datum.data[0].value * 1.25, i])
 				labels.push(this.formatDatumLabel(datum));
 				i += 1;
 			}, this);
 
 			// Make plot.
-			this.$cc.jqplot(
-				[series],
+			bar_width = row_height * .5;
+			this.$b.jqplot(
+				[unfiltered_series, filtered_series],
 				{
 				seriesDefaults:{
 					renderer:$.jqplot.BarRenderer,
 					rendererOptions: {
 						barDirection: 'horizontal',
+						barPadding: -1 * bar_width,
+						barWidth: bar_width,
 						fillToZero: true
 					}
 				},
