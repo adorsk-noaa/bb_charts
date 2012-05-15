@@ -8,15 +8,16 @@
 		right: @padding;
 		bottom: @padding;
 		left: @padding;
-		overflow: auto;
+		overflow-y: scroll;
+		overflow-x: visible;
 
 		.body{
 			position: absolute;
 			top: 0;
 			left: 0;
+			right: 0;
 			font-size: 12px;
-			height: 1em;
-			width: 100%;
+			padding: @padding;
 
 			.jqplot-yaxis{
 				z-index: 1;
