@@ -159,8 +159,23 @@
 			right: 0;
 			top: 0;
 			bottom: 0;
-			border: thin solid black;
 		}
+
+		.instructions{
+			position: absolute;
+			.rounded_corners(@tab_corner_radius);	
+			border: thin solid @chrome_primary;
+			background: @fill_primary;
+			text-align: center;
+			left: 20px;
+			right: 20px;
+			bottom: 40%;
+
+			> .body{
+				padding: 3em;
+			}
+		}
+
 	}
 
 	.quantity-field-container{

@@ -22,6 +22,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 		initialize: function(opts){
 			$(this.el).addClass('chart-editor');
 			this.render();
+			this.showInstructions();
 			this.resize();
 			this.resizeStop();
 
@@ -267,7 +268,11 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 		onDatasourceQueryChange: function(){
 			var ds = this.model.get('datasource');
 			if (this.selected_category_field && this.selected_quantity_field){
+				this.showChart();
 				ds.getData();
+			}
+			else{
+				this.showInstructions();
 			}
 		},
 
@@ -276,8 +281,14 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			this.model.get('chart').set('data', this.model.get('datasource').get('data'));
 		},
 
-		hideInstructions: function(){
-			
+		showInstructions: function(){
+			$('.chart-container > .chart',  this.el).css('visibility', 'hidden');
+			$('.chart-container > .instructions',  this.el).css('visibility', 'visible');
+		},
+
+		showChart: function(){
+			$('.chart-container > .chart',  this.el).css('visibility', 'visible');
+			$('.chart-container > .instructions',  this.el).css('visibility', 'hidden');
 		}
 
 	});
