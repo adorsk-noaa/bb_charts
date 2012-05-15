@@ -32,6 +32,7 @@
 
 @field_tab_h: 40px;
 @tab_bw: 1px;
+@tab_corner_radius: 7px;
 
 .chart-editor{
 
@@ -78,7 +79,7 @@
 		}
 
 		> .body-container{
-			border-color: @chrome_secondary;
+			border-color: @chrome_primary;
 			border-style: solid;
 
 			> .body{
@@ -97,7 +98,7 @@
 		position: relative;
 
 		.category-field-tab{
-			.rounded_corners_left(7px);
+			.rounded_corners_left(@tab_corner_radius);
 			position: absolute;
 			left: 0;
 			right: 0;
@@ -106,6 +107,7 @@
 
 			> .title-container{
 				position: absolute;
+				top: 0;
 				left: 0;
 				width: @field_tab_h;				
 				height: 100%;
@@ -133,6 +135,7 @@
 				bottom: @tab_bw;
 				padding-left: 5px;
 				border-width: 0;
+				overflow: hidden;
 
 				.body{
 					position: absolute;
@@ -166,15 +169,15 @@
 
 	.quantity-field-container{
 		@body_h: 160px;
-		min-height: @field_tab_h;
-		max-height: @field_tab_h + @tab_bw + @body_h;
+		min-height: @field_tab_h + @tab_corner_radius;
+		max-height: @field_tab_h + @tab_corner_radius + @body_h;
 		height: @field_tab_h;
 		width: 100%;
 		overflow: hidden;
 		position: relative;
 
 		.quantity-field-tab{
-			.rounded_corners_bottom(7px);
+			.rounded_corners_bottom(@tab_corner_radius);
 			position: absolute;
 			left: 0;
 			right: 0;
@@ -195,7 +198,7 @@
 				top: @field_tab_h;
 				left: @tab_bw;
 				right: @tab_bw;
-				bottom: 7px;
+				bottom: @tab_corner_radius;
 				overflow: hidden;
 				border-width: 0 0;
 				
