@@ -158,6 +158,8 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 							}
 							else{
 								$fc.removeClass('expanded')
+								_this.resize();
+								_this.resizeStop();
 							}
 						}
 					}
