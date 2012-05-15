@@ -34,6 +34,9 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			
 			// Handle changes in datasource data.
 			ds.on('change:data', this.onDatasourceDataChange, this);
+
+			// Handle datasource loading events.
+			ds.on('change:loading', this.onDatasourceLoadingChange, this);
 			
 			// Change the datasource query when the field selectors change.
 			this.model.get('category_field').on('change:selected_field', this.onCategoryFieldChange, this);
@@ -47,6 +50,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			this.$table = $(this.el).children('table.body');
 			this.$cfc = $('.category-field-container', this.el);
 			this.$qfc = $('.quantity-field-container', this.el);
+			this.$loading_animation = $('.loading-animation', this.el);
 
 			var ds = this.model.get('datasource');
 			var schema = ds.get('schema');
@@ -89,6 +93,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 
 		resizeStop: function(){
 			this.resizeChart();
+			this.resizeLoadingAnimation();
 		},
 
 		resizeVerticalTab: function(){
@@ -99,6 +104,12 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 
 		resizeChart: function(){
 			this.chart_view.resize();
+		},
+
+		resizeLoadingAnimation: function(){
+			var $container = this.$loading_animation.parent();	
+			this.$loading_animation.css('left', $container.width()/2 - this.$loading_animation.width()/2);
+			this.$loading_animation.css('top', $container.height()/2 - this.$loading_animation.height()/2);
 		},
 
 		toggleCategoryField: function(){
@@ -271,6 +282,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			var ds = this.model.get('datasource');
 			if (this.selected_category_field && this.selected_quantity_field){
 				this.showChart();
+				ds.set('loading', true);
 				ds.getData();
 			}
 			else{
@@ -281,6 +293,17 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 
 		onDatasourceDataChange: function(){
 			this.model.get('chart').set('data', this.model.get('datasource').get('data'));
+		},
+
+		onDatasourceLoadingChange: function(){
+			var loading = this.model.get('datasource').get('loading');
+			var _this = this;
+			if (loading){
+				this.$loading_animation.fadeIn(400);
+			}
+			else{
+				this.$loading_animation.fadeOut(800);
+			}
 		},
 
 		showInstructions: function(){
