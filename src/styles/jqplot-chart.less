@@ -23,12 +23,17 @@
 				z-index: 1;
 			}
 
-			.datum-label{
+			.datum-label-container{
 				display: inline-block;
-				max-width: 10em;
-				text-overflow: ellipsis;
-				overflow: hidden;
-				white-space: nowrap;
+				padding: 0 .5em;
+
+				> .datum-label{
+					display: inline-block;
+					max-width: 10em;
+					text-overflow: ellipsis;
+					overflow: hidden;
+					white-space: nowrap;
+				}
 			}
 		}
 	}

@@ -233,12 +233,14 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 
 		onCategoryFieldChange: function(){
 			this.selected_category_field = this.model.get('category_field').get('selected_field');
+			$('.category-field-name', this.el).html(this.selected_category_field.get('label'));
 			this.updateChartTitle();
 			this.updateDatasourceQuery();
 		},
 
 		onQuantityFieldChange: function(){
 			this.selected_quantity_field = this.model.get('quantity_field').get('selected_field');
+			$('.quantity-field-name', this.el).html(this.selected_quantity_field.get('label'));
 			this.updateChartTitle();
 			this.updateDatasourceQuery();
 		},

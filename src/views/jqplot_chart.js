@@ -47,11 +47,13 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 		getRowHeight: function(){
 			var $tmp_body = $('<div class="body jqplot-target" style="visibility: hidden; position: absolute; height: 100%;"></div>');
 			var $tmp_yaxis = $('<div class="jqplot-axis jqplot-yaxis"></div>');
-			var $tmp_tick = $('<div class="jqplot-yaxis-tick" style="position: absolute;"><span class="datum-label">&nbsp;</span></div>');
+			var $tmp_tick = $('<div class="jqplot-yaxis-tick" style="position: absolute;"></div>');
+			var $tmp_label = $(this.formatDatumLabel({id: '', label: '&nbsp;'}));
 
 			this.$body_container.append($tmp_body);
 			$tmp_body.append($tmp_yaxis);
 			$tmp_yaxis.append($tmp_tick);
+			$tmp_tick.append($tmp_label);
 			row_h = $tmp_tick.outerHeight();
 			$tmp_body.remove();
 			return row_h;
@@ -169,7 +171,7 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 		},
 
 		formatDatumLabel: function(datum){
-			return _s.sprintf('<span data-category-id="%s" class="datum-label">%s</span>', datum.id, datum.label);
+			return _s.sprintf('<span class="datum-label-container"><span data-category-id="%s" class="datum-label">%s</span></span>', datum.id, datum.label);
 		},
 
 		formatQuantityLabel: function(formatString, value){

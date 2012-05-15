@@ -254,22 +254,27 @@
 
 
 .single-field-selector{
-	.field {
-		display: none;
-		&.selected {
-			display: inherit;
-		}
-	}
 
-	.categorical-category-field{
-		font-style: italic;
-	}
 
 	fieldset{
-		border: thin solid @faint_grey;
+		border: thin solid @chrome_secondary;
 
 		legend {
 			font-family: sans-serif;
+		}
+	}
+
+	.field-options {
+
+		.field {
+			display: none;
+			&.selected {
+				display: inherit;
+			}
+		}
+
+		.categorical-category-field{
+			font-style: italic;
 		}
 	}
 
