@@ -24,6 +24,62 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 		initialRender: function(){
 			this.$body_container = $('<div class="body-container"></div>');
 			$(this.el).append(this.$body_container);
+			this.offsets = this.getBodyOffsets();
+			this.row_h = this.getRowHeight();
+			this.xaxis_h = this.getXAxisHeight();
+			this.title_h = this.getTitleHeight();
+		},
+
+		// Get body container offsets (scrollbars).
+		getBodyOffsets: function(){
+			var offsets = {};
+			var $tmp_body = $('<div style="visibility: hidden; position: absolute; left:0; right: 0; bottom: 0; top: 0;"></div>');
+			this.$body_container.css('overflow', 'scroll');
+			this.$body_container.append($tmp_body);
+			offsets.w = this.$body_container.width() - $tmp_body.outerWidth();
+			offsets.h = this.$body_container.height() - $tmp_body.outerHeight();
+			$tmp_body.remove();
+			this.$body_container.css('overflow', '');
+			return offsets;
+		},
+
+		// Calculate height of the xaxis by making a fake axis.
+		getRowHeight: function(){
+			var $tmp_body = $('<div class="body jqplot-target" style="visibility: hidden; position: absolute; height: 100%;"></div>');
+			var $tmp_yaxis = $('<div class="jqplot-axis jqplot-yaxis"></div>');
+			var $tmp_tick = $('<div class="jqplot-yaxis-tick" style="position: absolute;"><span class="datum-label">&nbsp;</span></div>');
+
+			this.$body_container.append($tmp_body);
+			$tmp_body.append($tmp_yaxis);
+			$tmp_yaxis.append($tmp_tick);
+			row_h = $tmp_tick.outerHeight();
+			$tmp_body.remove();
+			return row_h;
+		},
+		
+		// Calculate height of a row by making a fake axis.
+		getXAxisHeight: function(){
+			var $tmp_body = $('<div class="body jqplot-target" style="visibility: hidden; position: absolute; height: 100%;"></div>');
+			var $tmp_xaxis = $('<div class="jqplot-axis jqplot-xaxis" style="position: absolute;"></div>');
+			var $tmp_tick = $('<div class="jqplot-xaxis-tick" style="position: absolute;">&nbsp;</div>');
+
+			this.$body_container.append($tmp_body);
+			$tmp_body.append($tmp_xaxis);
+			$tmp_xaxis.append($tmp_tick);
+			xaxis_h = Math.max($tmp_xaxis.outerHeight(), $tmp_tick.outerHeight());
+			$tmp_body.remove();
+			return xaxis_h;
+		},
+
+		// Calculate height of the plot title by making a fake title.
+		getTitleHeight: function(){
+			var $tmp_body = $('<div class="body jqplot-target" style="visibility: hidden; position: absolute; height: 100%;"></div>');
+			var $tmp_title = $('<div class="jqplot-title" style="position: absolute;">&nbsp;</div>');
+			this.$body_container.append($tmp_body);
+			$tmp_body.append($tmp_title);
+			title_h = $tmp_title.outerHeight();
+			$tmp_body.remove();
+			return title_h;
 		},
 
 		render: function(){
@@ -39,11 +95,10 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			this.$b = $('<div class="body"></div>');
 			this.$body_container.append(this.$b);
 
-			// Calculate row height from minimum initial body size, w/ some padding.
-			var row_height = this.$b.height() + 2;
-
-			// Set chart height to max of (rows * row height, parent container height)
-			var chart_height = Math.max(data.length * row_height + row_height, this.$b.parent().height());
+			// Set chart height to max of (rows * row height + xaxis_height, parent container height)
+			var calculated_height = data.length * this.row_h + this.xaxis_h + this.title_h;
+			var chart_height = Math.max(calculated_height, this.$b.parent().height() - this.offsets.h);
+			console.log(calculated_height, this.$b.parent().height());
 			this.$b.css('minHeight', chart_height);
 
 			// Format data for jqplot.	
@@ -90,7 +145,7 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			};
 
 			// Make plot.
-			bar_width = row_height * .5;
+			bar_width = this.row_h * .5;
 			this.$b.jqplot(
 				series_list,
 				{
