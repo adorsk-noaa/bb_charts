@@ -87,7 +87,7 @@
 	.category-field-container{
 		@body_w: 160px;
 		min-width: @field_tab_h;
-		max-width: @field_tab_h + @body_w;
+		max-width: @field_tab_h + @body_w + @tab_bw;
 		width: @field_tab_h;
 		height: 100%;
 		overflow: hidden;
@@ -126,7 +126,7 @@
 			.body-container{
 				position: absolute;
 				left: @field_tab_h;
-				right: 0;
+				right: @tab_bw;
 				top: @tab_bw;
 				bottom: @tab_bw;
 				padding-left: 5px;
@@ -170,6 +170,7 @@
 			left: 20px;
 			right: 20px;
 			bottom: 40%;
+			overflow: auto;
 
 			> .body{
 				padding: 3em;
