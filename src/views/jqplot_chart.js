@@ -98,7 +98,6 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			// Set chart height to max of (rows * row height + xaxis_height, parent container height)
 			var calculated_height = data.length * this.row_h + this.xaxis_h + this.title_h;
 			var chart_height = Math.max(calculated_height, this.$b.parent().height() - this.offsets.h);
-			console.log(calculated_height, this.$b.parent().height());
 			this.$b.css('minHeight', chart_height);
 
 			// Format data for jqplot.	
@@ -149,7 +148,7 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			this.$b.jqplot(
 				series_list,
 				{
-				title: 'Da Title',
+				title: this.model.get('title'),
 				seriesDefaults:{
 					renderer:$.jqplot.BarRenderer,
 					rendererOptions: {

@@ -231,12 +231,25 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 		},
 
 		onCategoryFieldChange: function(){
-			$('.category_field', this.el).html(this.model.get('category_field').get('selected_field').get('label'));
-			this.updateDatasourceQuery()
+			this.selected_category_field = this.model.get('category_field').get('selected_field');
+			this.updateChartTitle();
+			this.updateDatasourceQuery();
 		},
 
 		onQuantityFieldChange: function(){
-			this.updateDatasourceQuery()
+			this.selected_quantity_field = this.model.get('quantity_field').get('selected_field');
+			this.updateChartTitle();
+			this.updateDatasourceQuery();
+		},
+
+		updateChartTitle: function(){
+			if (this.selected_category_field && this.selected_quantity_field){
+				var chart_title = _s.sprintf('%s, by %s', 
+						this.selected_quantity_field.get('label'),
+						this.selected_category_field.get('label')
+						);
+				this.model.get('chart').set('title', chart_title);
+			}
 		},
 
 		updateDatasourceQuery: function(){
