@@ -4,10 +4,11 @@ define([
 	"use!underscore",
 	"use!ui",
 	"_s",
-	"./category_field",
+	"./categorical_category_field",
+	"./numerical_quantity_field",
 	"text!./templates/single_field_selector.html"
 		],
-function($, Backbone, _, ui, _s, CategoryFieldView, template){
+function($, Backbone, _, ui, _s, CategoricalCategoryFieldView, NumericalQuantityFieldView, template){
 
 	var SingleFieldSelectorView = Backbone.View.extend({
 
@@ -18,13 +19,6 @@ function($, Backbone, _, ui, _s, CategoryFieldView, template){
 		initialize: function(opts){
 			$(this.el).addClass('field-selector single-field-selector');
 			this.rendered_field_definitions = {};
-
-			if (opts && opts.hasOwnProperty('fieldViewClass')){
-				this.fieldViewClass = opts['fieldViewClass'];
-			}
-			else{
-				this.fieldViewClass = CategoryFieldView;
-			}
 
 			this.render();
 		},
@@ -46,7 +40,7 @@ function($, Backbone, _, ui, _s, CategoryFieldView, template){
 				var field_model = new Backbone.Model(field_definition);
 
 				var field_view = this.getFieldView(field_model);
-				$('.field-panels', this.el).append(field_view.el);
+				$('.field-options', this.el).append(field_view.el);
 
 				this.rendered_field_definitions[field_definition['field_id']] = {
 					'field_id': field_definition['field_id'],
@@ -67,7 +61,22 @@ function($, Backbone, _, ui, _s, CategoryFieldView, template){
 		},
 
 		getFieldView: function(field_model){
-			return new this.fieldViewClass({
+			var field_type = field_model.get('field_type');
+			var value_type = field_model.get('value_type');
+
+			var fieldViewClass;
+			if (field_type == 'quantity'){
+				if (value_type == 'numerical'){
+					fieldViewClass = NumericalQuantityFieldView;
+				}
+			}
+			else if (field_type == 'category'){
+				if (value_type == 'categorical'){
+					fieldViewClass = CategoricalCategoryFieldView;
+				}
+			}
+
+			return new fieldViewClass({
 				model: field_model
 			});
 		},

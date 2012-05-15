@@ -80,12 +80,13 @@
 
 			> .body{
 				padding: 5px;
+				overflow-y: auto;
 			}
 		}
 	}
 
 	.category-field-container{
-		@body_w: 160px;
+		@body_w: 200px;
 		min-width: @field_tab_h;
 		max-width: @field_tab_h + @body_w + @tab_bw;
 		width: @field_tab_h;
@@ -133,11 +134,11 @@
 				border-width: 0;
 				overflow: hidden;
 
-				.body{
+				> .body{
 					position: absolute;
 					top: 0;
 					left: 0;
-					width: @body_w;
+					right: 0;
 					height: 100%;
 					background: white;
 				}
@@ -216,11 +217,11 @@
 				overflow: hidden;
 				border-width: 0 0;
 				
-				.body{
+				> .body{
 					position: absolute;
 					top: 0;
 					left: 0;
-					width: 100%;
+					right: 0;
 					height: @body_h;	
 					background: white;
 				}
@@ -253,17 +254,4 @@
 		}
 	}
 
-	.field-picker{
-		text-align: center;
-	}
-
-	.config-form-wrapper{
-
-		.config-form{
-			> .inner{
-				margin-left: auto;
-				margin-right: auto;
-			}
-		}
-	}
 }
