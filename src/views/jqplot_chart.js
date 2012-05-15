@@ -100,12 +100,6 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			var chart_height = Math.max(calculated_height, this.$body_container.height() - this.offsets.h);
 			this.$b.css('minHeight', chart_height);
 
-			/*
-			var chart_width = this.$b.width() - this.offsets.w;
-			console.log(this.$body_container.width(), chart_width);
-			this.$b.css('width', chart_width);
-			*/
-
 			// Format data for jqplot.	
 			series = {};
 			var labels = [];

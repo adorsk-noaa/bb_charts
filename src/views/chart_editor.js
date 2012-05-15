@@ -29,7 +29,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			var schema = ds.get('schema');
 
 			// Fetch new data when the datasource query changes.
-			ds.get('query').on('change', ds.getData, ds);
+			ds.get('query').on('change', this.onDatasourceQueryChange, this);
 			
 			// Handle changes in datasource data.
 			ds.on('change:data', this.onDatasourceDataChange, this);
@@ -264,9 +264,20 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 
 		},
 
+		onDatasourceQueryChange: function(){
+			var ds = this.model.get('datasource');
+			if (this.selected_category_field && this.selected_quantity_field){
+				ds.getData();
+			}
+		},
+
+
 		onDatasourceDataChange: function(){
-			console.log('onDatasourceDatachange');
 			this.model.get('chart').set('data', this.model.get('datasource').get('data'));
+		},
+
+		hideInstructions: function(){
+			
 		}
 
 	});
