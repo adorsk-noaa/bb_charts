@@ -72,11 +72,16 @@
 
 		> .title-container{
 			cursor: pointer;
+
+			.title {
+				padding: @padding_normal 0;
+			}
 		}
 
 		> .body-container{
 			border-color: @chrome_primary;
 			border-style: solid;
+			font-size: 14px;
 
 			> .body{
 				overflow-y: auto;
@@ -122,7 +127,6 @@
 						height: 100%;
 						width: 100%;
 						text-align: center;
-						padding: 7px 0;
 					}
 				}
 			}
@@ -254,6 +258,18 @@
 		display: none;
 		&.selected {
 			display: inherit;
+		}
+	}
+
+	.categorical-category-field{
+		font-style: italic;
+	}
+
+	fieldset{
+		border: thin solid @faint_grey;
+
+		legend {
+			font-family: sans-serif;
 		}
 	}
 
