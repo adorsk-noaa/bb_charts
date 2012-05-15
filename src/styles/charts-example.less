@@ -79,8 +79,11 @@
 			border-style: solid;
 
 			> .body{
-				padding: 5px;
 				overflow-y: auto;
+
+				> .inner{
+					padding: @padding_normal;
+				}
 			}
 		}
 	}
@@ -88,7 +91,7 @@
 	.category-field-container{
 		@body_w: 200px;
 		min-width: @field_tab_h;
-		max-width: @field_tab_h + @body_w + @tab_bw;
+		max-width: @field_tab_h + @body_w + @tab_bw + 2 * @padding_normal;
 		width: @field_tab_h;
 		height: 100%;
 		overflow: hidden;
@@ -138,7 +141,7 @@
 					position: absolute;
 					top: 0;
 					left: 0;
-					right: 0;
+					width: @body_w + 2 * @padding_normal;
 					height: 100%;
 					background: white;
 				}
@@ -183,9 +186,9 @@
 	}
 
 	.quantity-field-container{
-		@body_h: 160px;
-		min-height: @field_tab_h + @tab_corner_radius;
-		max-height: @field_tab_h + @tab_corner_radius + @body_h;
+		@body_h: 225px;
+		min-height: @field_tab_h;
+		max-height: @field_tab_h + @tab_corner_radius + @body_h + 2 * @padding_normal;
 		height: @field_tab_h;
 		width: 100%;
 		overflow: hidden;
@@ -222,7 +225,7 @@
 					top: 0;
 					left: 0;
 					right: 0;
-					height: @body_h;	
+					height: @body_h + 2 * @padding_normal ;	
 					background: white;
 				}
 			}

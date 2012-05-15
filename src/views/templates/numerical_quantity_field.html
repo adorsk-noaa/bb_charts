@@ -1,6 +1,6 @@
 <form class="config-form">
 	<table>
-		<tr>
+		<tr class="min">
 			<td>Min: </td>
 			<td><input type="text"></td>
 			<td>
@@ -8,7 +8,7 @@
 				<label for="<% print ([model.cid, 'min-auto'].join('-')); %>">auto</label>
 			</td>
 		</tr>
-		<tr>
+		<tr class="max">
 			<td>Max: </td>
 			<td><input type="text"></td>
 			<td>
@@ -16,11 +16,11 @@
 				<label for="<% print ([model.cid, 'max-auto'].join('-')); %>">auto</label>
 			</td>
 		</tr>
-		<tr>
+		<tr class="scale">
 			<td>Scale:</td>
 			<td>
-				<input type="radio" name="scale" id="<% print ([model.cid, 'scale-linear'].join('-')); %>" /> <label for="<% print ([model.cid, 'scale-linear'].join('-')); %>" >linear</label><br/>
-				<input type="radio" name="scale" id="<% print ([model.cid, 'scale-log'].join('-')); %>" /> <label for="<% print ([model.cid, 'scale-log'].join('-')); %>" >log</label><br/>
+				<input type="radio" name="scale" value="linear" id="<% print ([model.cid, 'scale-linear'].join('-')); %>" /> <label for="<% print ([model.cid, 'scale-linear'].join('-')); %>" >linear</label><br/>
+				<input type="radio" name="scale" value="log" id="<% print ([model.cid, 'scale-log'].join('-')); %>" /> <label for="<% print ([model.cid, 'scale-log'].join('-')); %>" >log</label><br/>
 			</td>
 		</tr>
 	</table>
