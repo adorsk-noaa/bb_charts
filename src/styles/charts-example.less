@@ -37,12 +37,12 @@
 .chart-editor{
 
 	display: inline-block;
-	border: thin solid black;
 	position: relative;
 
 	@tw: 600px;
 	> .table{
 		border-spacing: 0;
+		border-collapse: collapse;
 		width: @tw;
 		height: 600px;
 		> .row {
@@ -152,6 +152,8 @@
 		width: 100%;
 		position: relative;
 		overflow: hidden;
+		.rounded_corners(@tab_corner_radius);
+		border: thin solid @chrome_primary;
 
 		.chart{
 			position: absolute;
