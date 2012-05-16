@@ -71,14 +71,16 @@
 		background: @chrome_primary;  
 
 		> .title-container{
-			cursor: pointer;
 
-			&:hover {
-				background: @chrome_secondary;
-			}
+			text-align: center;
 
 			.title {
-				padding: @padding_normal 0;
+				display: inline-block;
+				.button;
+				.rounded_corners(7px);
+				margin: @padding_tight;
+				font-size: 18px;
+				padding: 1px @padding_looser;
 			}
 		}
 
@@ -127,11 +129,6 @@
 					bottom: 0;
 					overflow: hidden;
 
-					> .title{
-						height: 100%;
-						width: 100%;
-						text-align: center;
-					}
 				}
 			}
 
@@ -221,7 +218,6 @@
 
 			> .title-container{
 				position: absolute;
-				text-align: center;
 				top: 0;
 				left: 0;
 				width: 100%;
