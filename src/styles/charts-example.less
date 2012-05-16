@@ -75,12 +75,16 @@
 			text-align: center;
 
 			.title {
-				display: inline-block;
 				.button;
-				.rounded_corners(7px);
+				display: inline-block;
+				.rounded_corners(@tab_corner_radius);
 				margin: @padding_tight;
 				font-size: 18px;
 				padding: 1px @padding_looser;
+
+				button.toggle {
+					.button;
+				}
 			}
 		}
 

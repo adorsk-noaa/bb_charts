@@ -146,6 +146,12 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 
 			// Animate field container dimension.
 			$fc.addClass('changing');
+
+			// Toggle button text
+			var button_text = ($('button.toggle', $fc).html() == '\u25B2') ? '\u25BC' : '\u25B2';
+			$('button.toggle', $fc).html(button_text);
+
+			// Execute the animation.
 			var fc_dim_opts = {};
 			fc_dim_opts[dim] = parseInt($fc.css(dim),10) + delta;
 			$fc.animate(
@@ -153,6 +159,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 					{
 						complete: function(){
 							$fc.removeClass('changing');
+
 							if (expand){
 								$fc.addClass('expanded')
 							}
