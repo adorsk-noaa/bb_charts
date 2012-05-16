@@ -102,6 +102,18 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			var chart_height = Math.max(calculated_height, this.$body_container.height() - this.offsets.h);
 			this.$b.css('minHeight', chart_height);
 
+			// Define bar width.
+			var bar_width = this.row_h * .5;
+
+			// Define default renderer options.
+			var renderer_options = {
+						shadow: false,
+						barDirection: 'horizontal',
+						barWidth: bar_width,
+						barPadding: -1 * bar_width,
+						fillToZero: true,
+					};
+
 			// Format data for jqplot.	
 			series = {};
 			var labels = [];
@@ -131,7 +143,29 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			drange = dmax - dmin;
 
 			// Break out series into list.
-			series_list = _.values(series) || [];
+			series_lists = _.values(series) || [];
+
+			// Initialize empty series options objects, one per series.
+			var series_options = [];
+			_.each(series_lists, function(series_list){
+				series_options.push({});
+			}, this);
+
+			// Set last series to be transparent (we assume it's the reference series).
+			var ref_bar_width = this.row_h * .75;
+			series_options[1] = {
+				color: 'rgba(255,255,255,0)',
+				rendererOptions: _.extend({}, renderer_options, {
+					shadow: true,
+					shadowOffset: 0,
+					highlightMouseOver: false,
+					highlightMouseDown: false
+				})
+			};
+
+			series_lists.reverse();
+			series_options.reverse();
+
 
 			// configure xaxis.
 			var padding = .05;
@@ -145,21 +179,15 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 				max: (this.model.get('max') == null) ? dmax + padding * drange : this.model.get('max')
 			};
 
-			// Make plot.
-			bar_width = this.row_h * .5;
-			this.$b.jqplot(
-				series_list,
-				{
+			// Make plot object.
+			this.plot = {
+				data: series_lists,
 				title: this.model.get('title'),
 				seriesDefaults:{
 					renderer:$.jqplot.BarRenderer,
-					rendererOptions: {
-						barDirection: 'horizontal',
-						barPadding: -1 * bar_width,
-						barWidth: bar_width,
-						fillToZero: true
-					}
+					rendererOptions: renderer_options,
 				},
+				series: series_options,
 				axes: {
 					yaxis: {
 						renderer: $.jqplot.CategoryAxisRenderer,
@@ -167,7 +195,12 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 					},
 					xaxis: xaxis
 				}
-			});
+			};
+
+			// Create the plot.
+			this.$b.jqplot(this.plot);
+			window.c = this.$b;
+			window.p = this.plot;
 		},
 
 		formatDatumLabel: function(datum){
