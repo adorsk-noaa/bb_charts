@@ -14,7 +14,6 @@ function($, Backbone, _, ui, _s, QuantityFieldView, template){
 		events: {
 			'change .min': 'onMinChange',
 			'change .max': 'onMaxChange',
-			'change .scale': 'onScaleChange',
 		},
 
 		initialize: function(opts){
@@ -23,7 +22,6 @@ function($, Backbone, _, ui, _s, QuantityFieldView, template){
 			this.render();
 			this.model.on('change:min', this.setMin, this);
 			this.model.on('change:max', this.setMax, this);
-			this.model.on('change:scale', this.setScale, this);
 		},
 
 		render: function(){
@@ -33,18 +31,10 @@ function($, Backbone, _, ui, _s, QuantityFieldView, template){
 			_.each(['min', 'max'], function(minmax){
 				var val = this.model.get(minmax);
 				if (val == null){
-					console.log('yo');
 					this.model.set(minmax, 'auto');
 				}
 				this.setMinMax(minmax);
 			}, this);
-
-			// Set initial value for scale.
-			var scale_val = this.model.get('scale');
-			if (scale_val == null){
-				this.model.set('scale', 'linear');
-			}
-			this.setScale();
 
 		},
 
@@ -79,16 +69,7 @@ function($, Backbone, _, ui, _s, QuantityFieldView, template){
 				$t.removeAttr('disabled');
 				$t.val(val);
 			}
-		},
-
-		onScaleChange: function(){
-			this.model.set('scale', $('.scale input[name="scale"]:checked').val());
-		},
-
-		setScale: function(){
-			$(_s.sprintf('.scale input[name="scale"][value="%s"]', this.model.get('scale')), this.el).attr('checked', 'checked');
 		}
-
 
 
 	});

@@ -17,7 +17,6 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			$(this.el).addClass('jqplot-chart');
 			this.initialRender();
 
-			//this.model.on('change:data', this.onDataChange, this);
 			this.model.on('change', this.render, this);
 		},
 
@@ -139,9 +138,9 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 				labels.push(this.formatDatumLabel(datum));
 				i += 1;
 			}, this);
-			
-			drange = dmax - dmin;
 
+			drange = dmax - dmin;
+			
 			// Break out series into list.
 			series_lists = _.values(series) || [];
 
@@ -152,20 +151,21 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			}, this);
 
 			// Set last series to be transparent (we assume it's the reference series).
-			var ref_bar_width = this.row_h * .75;
-			series_options[1] = {
-				color: 'rgba(255,255,255,0)',
-				rendererOptions: _.extend({}, renderer_options, {
-					shadow: true,
-					shadowOffset: 0,
-					highlightMouseOver: false,
-					highlightMouseDown: false
-				})
-			};
+			if (series_options.length > 0){
+				var ref_bar_width = this.row_h * .75;
+				series_options[1] = {
+					color: 'rgba(255,255,255,0)',
+					rendererOptions: _.extend({}, renderer_options, {
+						shadow: true,
+						shadowOffset: 0,
+						highlightMouseOver: false,
+						highlightMouseDown: false
+					})
+				};
+			}
 
 			series_lists.reverse();
 			series_options.reverse();
-
 
 			// configure xaxis.
 			var padding = .05;
@@ -175,7 +175,7 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 				tickOptions:{
 					formatter: this.formatQuantityLabel
 				},
-				min: (this.model.get('min') == null) ? dmin - padding * drange: this.model.get('min'),
+				min: (this.model.get('min') == null) ? dmin - padding * drange : this.model.get('min'),
 				max: (this.model.get('max') == null) ? dmax + padding * drange : this.model.get('max')
 			};
 
@@ -196,11 +196,10 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 					xaxis: xaxis
 				}
 			};
+			console.log(this.plot);
 
 			// Create the plot.
 			this.$b.jqplot(this.plot);
-			window.c = this.$b;
-			window.p = this.plot;
 		},
 
 		formatDatumLabel: function(datum){
