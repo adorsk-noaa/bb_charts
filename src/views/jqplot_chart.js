@@ -17,7 +17,10 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			$(this.el).addClass('jqplot-chart');
 			this.initialRender();
 
-			this.model.on('change', this.render, this);
+			// Axis padding (as percent of range).
+			this.padding = 0;
+
+			this.model.on('change', this.onChange, this);
 		},
 
 		initialRender: function(){
@@ -83,6 +86,10 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			return title_h;
 		},
 
+		onChange: function(){
+			this.render();
+		},
+
 		render: function(){
 			var data = this.model.get('data');
 
@@ -117,7 +124,10 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			series = {};
 			var labels = [];
 			var i = 1;
-			var dmin, dmax, drange;
+			var data_bounds = {
+				min: null,
+				max: null
+			}
 			_.each(data, function(datum){
 				_.each(datum.data, function(v, k){
 					if (! series.hasOwnProperty(k)){
@@ -127,11 +137,11 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 					series[k].push(formatted_point);
 
 					// Update max/min.
-					if (! (dmin < v.value)){
-						dmin = v.value;	
+					if (! (data_bounds.min < v.value)){
+						data_bounds.min = v.value;	
 					}
-					if (! (dmax > v.value)){
-						dmax = v.value;
+					if (! (data_bounds.max > v.value)){
+						data_bounds.max = v.value;
 					}
 				}, this);
 
@@ -139,8 +149,32 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 				i += 1;
 			}, this);
 
-			drange = dmax - dmin;
-			
+
+			// Collect min/max data to set on chart.
+			var set_data = {};
+			_.each(['min', 'max'], function(minmax){
+				if (this.model.get(minmax) == null || this.model.get(minmax + "auto")){
+					set_data[minmax] = data_bounds[minmax];
+				}
+			}, this);
+
+			if (set_data){
+				this.model.set(set_data, {silent:true});
+				var bounds_have_changed = false;
+				var changed_attrs = this.model.changedAttributes();
+				if (changed_attrs){
+					_.each(['min', 'max'], function(minmax){
+						if (changed_attrs.hasOwnProperty(minmax) || changed_attrs.hasOwnProperty(minmax + 'auto')){
+							bounds_have_changed = true;
+						}
+					}, this);
+				}
+
+				if (bounds_have_changed){
+					this.model.trigger('change:bounds');
+				}
+			}
+
 			// Break out series into list.
 			series_lists = _.values(series) || [];
 
@@ -168,15 +202,12 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			series_options.reverse();
 
 			// configure xaxis.
-			var padding = .05;
 			var xaxis = {
-				padMin: padding,
-				padMax: padding,
 				tickOptions:{
 					formatter: this.formatQuantityLabel
 				},
-				min: (this.model.get('min') == null) ? dmin - padding * drange : this.model.get('min'),
-				max: (this.model.get('max') == null) ? dmax + padding * drange : this.model.get('max')
+				min: this.model.get('min'),
+				max: this.model.get('max')
 			};
 
 			// Make plot object.
@@ -196,8 +227,7 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 					xaxis: xaxis
 				}
 			};
-			console.log(this.plot);
-
+			
 			// Create the plot.
 			this.$b.jqplot(this.plot);
 		},
@@ -211,7 +241,6 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 		},
 
 		onDataChange: function(){
-			console.log('chart onDatachange');
 			this.render();
 		},
 

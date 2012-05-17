@@ -39,8 +39,11 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			ds.on('change:loading', this.onDatasourceLoadingChange, this);
 			
 			// Change the datasource query when the field selectors change.
-			this.model.get('category_field').on('change:selected_field', this.onCategoryFieldChange, this);
-			this.model.get('quantity_field').on('change:selected_field', this.onQuantityFieldChange, this);
+			this.model.get('category_field').on('change:selected_field', this.onSelectedCategoryFieldChange, this);
+			this.model.get('quantity_field').on('change:selected_field', this.onSelectedQuantityFieldChange, this);
+
+			// Update the quantity field when the chart min/max attributes change.
+			this.model.get('chart').on('change:bounds', this.onChartBoundsChange, this);
 			
 		},
 
@@ -251,18 +254,54 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			
 		},
 
-		onCategoryFieldChange: function(){
+		onSelectedCategoryFieldChange: function(){
 			this.selected_category_field = this.model.get('category_field').get('selected_field');
 			$('.category-field-name', this.el).html(this.selected_category_field.get('label'));
 			this.updateChartTitle();
 			this.updateDatasourceQuery();
 		},
 
-		onQuantityFieldChange: function(){
+		onSelectedQuantityFieldChange: function(){
+			if (this.selected_quantity_field){
+				this.disconnectQuantityField(this.selected_quantity_field);
+			}
 			this.selected_quantity_field = this.model.get('quantity_field').get('selected_field');
+			this.connectQuantityField(this.selected_quantity_field);
 			$('.quantity-field-name', this.el).html(this.selected_quantity_field.get('label'));
 			this.updateChartTitle();
 			this.updateDatasourceQuery();
+		},
+
+		connectQuantityField: function(field){
+			field.on('change', this.onQuantityFieldChange, this);
+		},
+
+		disconnectQuantityField: function(field){
+			field.off(null, null, this);
+		},
+
+		onQuantityFieldChange: function(){
+			this.updateChartBounds();
+		},
+
+		updateChartBounds: function(){
+			var set_data = {};
+			_.each(['min', 'max'], function(minmax){
+				set_data[minmax] = this.selected_quantity_field.get(minmax);
+				set_data[minmax + 'auto'] = this.selected_quantity_field.get(minmax + 'auto');
+			}, this);
+
+			this.model.get('chart').set(set_data);
+		},
+
+		onChartBoundsChange: function(m, e){
+			// Update quantity field to match chart bounds.
+			var set_data = {};
+			_.each(['min', 'max'], function(minmax){
+				set_data[minmax] = this.model.get('chart').get(minmax);
+			}, this);
+
+			this.selected_quantity_field.set(set_data);
 		},
 
 		updateChartTitle: function(){
@@ -274,6 +313,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 				this.model.get('chart').set('title', chart_title);
 			}
 		},
+
 
 		updateDatasourceQuery: function(){
 			var category_field = this.model.get('category_field').get('selected_field');
