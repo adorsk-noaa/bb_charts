@@ -4,12 +4,11 @@ define([
 	"use!underscore",
 	"use!ui",
 	"_s",
-	"./quantity_field",
-	"text!./templates/numerical_quantity_field.html"
+	"text!./templates/numeric_field.html"
 		],
-function($, Backbone, _, ui, _s, QuantityFieldView, template){
+function($, Backbone, _, ui, _s, template){
 
-	var NumericalQuantityFieldView = QuantityFieldView.extend({
+	var NumericFieldView = Backbone.View.extend({
 
 		events: {
 			'change input[type="text"]': 'onMinMaxTextChange',
@@ -17,8 +16,7 @@ function($, Backbone, _, ui, _s, QuantityFieldView, template){
 		},
 
 		initialize: function(opts){
-			QuantityFieldView.prototype.initialize.apply(this, arguments);
-			$(this.el).addClass('numerical-quantity-field');
+			$(this.el).addClass('numeric-field');
 			this.render();
 
 			// Set initial properties on inputs.
@@ -90,6 +88,6 @@ function($, Backbone, _, ui, _s, QuantityFieldView, template){
 
 	});
 
-	return NumericalQuantityFieldView;
+	return NumericFieldView;
 });
 		
