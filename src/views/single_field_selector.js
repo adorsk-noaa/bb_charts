@@ -5,10 +5,11 @@ define([
 	"use!ui",
 	"_s",
 	"./categorical_category_field",
+	"./numeric_category_field",
 	"./numeric_quantity_field",
 	"text!./templates/single_field_selector.html"
 		],
-function($, Backbone, _, ui, _s, CategoricalCategoryFieldView, NumericQuantityFieldView, template){
+function($, Backbone, _, ui, _s, CategoricalCategoryFieldView, NumericCategoryFieldView, NumericQuantityFieldView, template){
 
 	var SingleFieldSelectorView = Backbone.View.extend({
 
@@ -66,13 +67,16 @@ function($, Backbone, _, ui, _s, CategoricalCategoryFieldView, NumericQuantityFi
 
 			var fieldViewClass;
 			if (field_type == 'quantity'){
-				if (value_type == 'numerical'){
+				if (value_type == 'numeric'){
 					fieldViewClass = NumericQuantityFieldView;
 				}
 			}
 			else if (field_type == 'category'){
 				if (value_type == 'categorical'){
 					fieldViewClass = CategoricalCategoryFieldView;
+				}
+				else if (value_type == 'numeric'){
+					fieldViewClass = NumericCategoryFieldView;
 				}
 			}
 

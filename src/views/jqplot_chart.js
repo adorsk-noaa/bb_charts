@@ -98,6 +98,12 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 				return;
 			}
 
+			// Clone the data, to avoid overwriting the original.
+			data = data.slice(0);
+
+			// Reverse the data to go from top-to-bottom.
+			data.reverse();
+
 			// Render empty chart container.
 			this.$body_container.html('');
 			this.$b = $('<div class="body"></div>');
