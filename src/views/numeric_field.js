@@ -11,12 +11,13 @@ function($, Backbone, _, ui, _s, template){
 	var NumericFieldView = Backbone.View.extend({
 
 		events: {
-			'change input[type="text"]': 'onMinMaxTextChange',
-			'change input[type="checkbox"]': 'onMinMaxCheckboxChange',
+			'change .minmax input[type="text"]': 'onMinMaxTextChange',
+			'change .minmax input[type="checkbox"]': 'onMinMaxCheckboxChange',
 		},
 
 		initialize: function(opts){
 			$(this.el).addClass('numeric-field');
+			this.template = opts.template || template;
 			this.render();
 
 			// Set initial properties on inputs.
@@ -34,7 +35,7 @@ function($, Backbone, _, ui, _s, template){
 		},
 
 		render: function(){
-			$(this.el).html(_.template(template, {model: this.model}));
+			$(this.el).html(_.template(this.template, {model: this.model}));
 		},
 
 		onMinMaxTextChange: function(e){
