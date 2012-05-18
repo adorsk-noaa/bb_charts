@@ -35,7 +35,6 @@ function(_, _s){
 					var sorted_leafs = _.sortBy(leafs, function(leaf){
 						return leaf.label;
 					}, this);
-					console.log('sl', sorted_leafs);
 
 					return sorted_leafs;
 				}

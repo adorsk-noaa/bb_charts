@@ -255,7 +255,11 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 		},
 
 		onSelectedCategoryFieldChange: function(){
+			if (this.selected_category_field){
+				this.disconnectCategoryField(this.selected_category_field);
+			}
 			this.selected_category_field = this.model.get('category_field').get('selected_field');
+			this.connectCategoryField(this.selected_category_field);
 			$('.category-field-name', this.el).html(this.selected_category_field.get('label'));
 			this.updateChartTitle();
 			this.updateDatasourceQuery();
@@ -269,6 +273,19 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			this.connectQuantityField(this.selected_quantity_field);
 			$('.quantity-field-name', this.el).html(this.selected_quantity_field.get('label'));
 			this.updateChartTitle();
+			this.updateDatasourceQuery();
+		},
+
+		connectCategoryField: function(field){
+			field.on('change', this.onCategoryFieldChange, this);
+		},
+
+		disconnectCategoryField: function(field){
+			field.off(null, null, this);
+		},
+
+		onCategoryFieldChange: function(){
+			console.log('cat field change');
 			this.updateDatasourceQuery();
 		},
 
@@ -320,9 +337,25 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			var quantity_field = this.model.get('quantity_field').get('selected_field');
 			var q = this.model.get('datasource').get('query');
 
+			var grouping_field;
+			if (category_field){
+				grouping_field = category_field.toJSON();
+				// If minauto or maxauto is enabled on grouping field, don't send min/max.
+				_.each(['min', 'max'], function(minmax){
+					if (grouping_field[minmax + 'auto']){
+						delete grouping_field[minmax];
+					}
+				}, this);
+			}
+
+			var value_field;
+			if (quantity_field){
+				value_field =  quantity_field.toJSON();
+			}
+
 			q.set({
-				'GROUPING_FIELDS': (category_field) ? [category_field] : [],
-				'VALUE_FIELDS': (quantity_field) ? [quantity_field] : []
+				'GROUPING_FIELDS': (grouping_field) ? [grouping_field] : [],
+				'VALUE_FIELDS': (value_field) ? [value_field] : []
 			});
 
 		},
@@ -341,7 +374,27 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 
 
 		onDatasourceDataChange: function(){
-			this.model.get('chart').set('data', this.model.get('datasource').get('data'));
+			// Update the chart's data.
+			var data = this.model.get('datasource').get('data');
+			this.model.get('chart').set('data', data);
+			
+			// If currently selected category field is numeric, update is min/max.
+			if (this.selected_category_field && this.selected_category_field.get('value_type') == 'numeric'){
+				// Get min/max from data.
+				if (data.length > 1){
+					var dmin = data[0].min;
+					var dmax = data[data.length - 1].max;
+
+					// Update category field min/max.
+					this.disconnectCategoryField(this.selected_category_field);
+					this.selected_category_field.set({
+						min: dmin,
+						max: dmax
+					});
+					this.connectCategoryField(this.selected_category_field);
+				}
+			}
+
 		},
 
 		onDatasourceLoadingChange: function(){
