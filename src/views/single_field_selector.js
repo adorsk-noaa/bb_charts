@@ -93,7 +93,6 @@ function($, Backbone, _, ui, _s, CategoricalCategoryFieldView, NumericCategoryFi
 
 		onFieldSelectChange: function(e){
 			if (! this.selectInitialized){
-				console.log($('.field-picker-select option:first', this.el));
 				$('.field-picker-select option:first', this.el).remove();
 				this.selectInitialized = true;
 			}
