@@ -39,8 +39,8 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			ds.on('change:loading', this.onDatasourceLoadingChange, this);
 			
 			// Change the datasource query when the field selectors change.
-			this.model.get('category_field').on('change:selected_field', this.onSelectedCategoryFieldChange, this);
-			this.model.get('quantity_field').on('change:selected_field', this.onSelectedQuantityFieldChange, this);
+			this.category_field_selector.model.on('change:selected_field', this.onSelectedCategoryFieldChange, this);
+			this.quantity_field_selector.model.on('change:selected_field', this.onSelectedQuantityFieldChange, this);
 
 			// Update the quantity field when the chart min/max attributes change.
 			this.model.get('chart').on('change:bounds', this.onChartBoundsChange, this);
@@ -58,26 +58,20 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			var ds = this.model.get('datasource');
 			var schema = ds.get('schema');
 
-			// Add category field selector.
-			var category_field_model = new Backbone.Model({
-				field_definitions: schema.get('category_fields')
-			});
-			this.model.set('category_field', category_field_model);
-
-			var category_field_selector = new SingleFieldSelectorView({
+			this.category_field_selector = new SingleFieldSelectorView({
 				el: $('.category-field', this.el),
-				model: category_field_model
+				model: new Backbone.Model({
+					fields: schema.get('category_fields'),
+					selected_field: null
+				})
 			});
-			
-			// Add value field selector.
-			var quantity_field_model = new Backbone.Model({
-			field_definitions: schema.get('quantity_fields')
-			});
-			this.model.set('quantity_field', quantity_field_model);
-			var quantity_field_selector = new SingleFieldSelectorView({
+
+			this.quantity_field_selector = new SingleFieldSelectorView({
 				el: $('.quantity-field', this.el),
-				model: quantity_field_model,
-				fieldViewClass: QuantityFieldView
+				model: new Backbone.Model({
+					fields: schema.get('quantity_fields'),
+					selected_field: null
+				})
 			});
 
 			// Add chart view.
@@ -190,7 +184,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			if (this.selected_category_field){
 				this.disconnectCategoryField(this.selected_category_field);
 			}
-			this.selected_category_field = this.model.get('category_field').get('selected_field');
+			this.selected_category_field = this.category_field_selector.model.get('selected_field');
 			this.connectCategoryField(this.selected_category_field);
 			$('.category-field-name', this.el).html(this.selected_category_field.get('label'));
 			this.updateChartTitle();
@@ -201,7 +195,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			if (this.selected_quantity_field){
 				this.disconnectQuantityField(this.selected_quantity_field);
 			}
-			this.selected_quantity_field = this.model.get('quantity_field').get('selected_field');
+			this.selected_quantity_field = this.quantity_field_selector.model.get('selected_field');
 			this.connectQuantityField(this.selected_quantity_field);
 			$('.quantity-field-name', this.el).html(this.selected_quantity_field.get('label'));
 			this.updateChartTitle();
@@ -217,7 +211,6 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 		},
 
 		onCategoryFieldChange: function(){
-			console.log('cat field change');
 			this.updateDatasourceQuery();
 		},
 
@@ -236,8 +229,8 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 		updateChartBounds: function(){
 			var set_data = {};
 			_.each(['min', 'max'], function(minmax){
-				set_data[minmax] = this.selected_quantity_field.get(minmax);
-				set_data[minmax + 'auto'] = this.selected_quantity_field.get(minmax + 'auto');
+				set_data[minmax] = this.selected_quantity_field.get('entity').get(minmax);
+				set_data[minmax + 'auto'] = this.selected_quantity_field.get('entity').get(minmax + 'auto');
 			}, this);
 
 			this.model.get('chart').set(set_data);
@@ -250,7 +243,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 				set_data[minmax] = this.model.get('chart').get(minmax);
 			}, this);
 
-			this.selected_quantity_field.set(set_data);
+			this.selected_quantity_field.get('entity').set(set_data);
 		},
 
 		updateChartTitle: function(){
@@ -265,29 +258,27 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 
 
 		updateDatasourceQuery: function(){
-			var category_field = this.model.get('category_field').get('selected_field');
-			var quantity_field = this.model.get('quantity_field').get('selected_field');
 			var q = this.model.get('datasource').get('query');
 
-			var grouping_field;
-			if (category_field){
-				grouping_field = category_field.toJSON();
-				// If minauto or maxauto is enabled on grouping field, don't send min/max.
+			var grouping_entity;
+			if (this.selected_category_field){
+				grouping_entity = this.selected_category_field.get('entity').toJSON();
+				// If minauto or maxauto is enabled, don't send min/max.
 				_.each(['min', 'max'], function(minmax){
-					if (grouping_field[minmax + 'auto']){
-						delete grouping_field[minmax];
+					if (grouping_entity[minmax + 'auto']){
+						delete grouping_entity[minmax];
 					}
 				}, this);
 			}
 
-			var value_field;
-			if (quantity_field){
-				value_field =  quantity_field.toJSON();
+			var data_entity;
+			if (this.selected_quantity_field){
+				data_entity =this.selected_quantity_field.get('entity').toJSON();
 			}
 
 			q.set({
-				'GROUPING_FIELDS': (grouping_field) ? [grouping_field] : [],
-				'VALUE_FIELDS': (value_field) ? [value_field] : []
+				'grouping_entities': (grouping_entity) ? [grouping_entity] : [],
+				'data_entities': (data_entity) ? [data_entity] : []
 			});
 
 		},
@@ -312,6 +303,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 			
 			// If currently selected category field is numeric, update is min/max.
 			if (this.selected_category_field && this.selected_category_field.get('value_type') == 'numeric'){
+
 				// Get min/max from data.
 				if (data.length > 1){
 					var dmin = data[0].min;
@@ -319,7 +311,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 
 					// Update category field min/max.
 					this.disconnectCategoryField(this.selected_category_field);
-					this.selected_category_field.set({
+					this.selected_category_field.get('entity').set({
 						min: dmin,
 						max: dmax
 					});

@@ -18,6 +18,7 @@ function($, Backbone, _, ui, _s, template){
 		initialize: function(opts){
 			$(this.el).addClass('numeric-field');
 			this.template = opts.template || template;
+			this.entity = this.model.get('entity');
 			this.render();
 
 			// Set initial properties on inputs.
@@ -27,27 +28,28 @@ function($, Backbone, _, ui, _s, template){
 			},this);
 
 
-			this.model.on('change:min', function(){this.setMinMaxText('min')}, this);
-			this.model.on('change:max', function(){this.setMinMaxText('max')}, this);
-			this.model.on('change:minauto', function(){this.setMinMaxCheckbox('min')}, this);
-			this.model.on('change:maxauto', function(){this.setMinMaxCheckbox('max')}, this);
+			this.entity.on('change', function(){this.model.trigger('change');}, this);
+			this.entity.on('change:min', function(){this.setMinMaxText('min')}, this);
+			this.entity.on('change:max', function(){this.setMinMaxText('max')}, this);
+			this.entity.on('change:minauto', function(){this.setMinMaxCheckbox('min')}, this);
+			this.entity.on('change:maxauto', function(){this.setMinMaxCheckbox('max')}, this);
 
 		},
 
 		render: function(){
-			$(this.el).html(_.template(this.template, {model: this.model}));
+			$(this.el).html(_.template(this.template, {model: this.model, entity: this.entity}));
 		},
 
 		onMinMaxTextChange: function(e){
 			var minmax = $(e.target).data('minmax');
 			var raw_val = this.getMinMaxElements(minmax).$text.val();
 			var val = parseFloat(raw_val);
-			this.model.set(minmax, val);
+			this.entity.set(minmax, val);
 		},
 
 		setMinMaxText: function(minmax){
 			var minmax_els = this.getMinMaxElements(minmax);
-			minmax_els.$text.val(this.model.get(minmax));
+			minmax_els.$text.val(this.entity.get(minmax));
 		},
 
 		getMinMaxElements: function(minmax){
@@ -65,19 +67,19 @@ function($, Backbone, _, ui, _s, template){
 			var minmax_els = this.getMinMaxElements(minmax);
 			var auto_attr = minmax + 'auto';
 			if (minmax_els.$checkbox.is(':checked')){
-				this.model.set(auto_attr, true);
+				this.entity.set(auto_attr, true);
 				minmax_els.$text.attr('disabled', 'true');
 			}
 			else{
 				minmax_els.$text.removeAttr('disabled');
-				this.model.set(auto_attr, false);
+				this.entity.set(auto_attr, false);
 			}
 		},
 
 		setMinMaxCheckbox: function(minmax){
 			var minmax_els = this.getMinMaxElements(minmax);
 			var auto_attr = minmax + 'auto';
-			if (this.model.get(auto_attr)){
+			if (this.entity.get(auto_attr)){
 				minmax_els.$checkbox.attr('checked', 'checked');
 				minmax_els.$text.attr('disabled', 'true');
 			}

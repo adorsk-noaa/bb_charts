@@ -2,7 +2,7 @@
 	<table>
 		<tr class="min minmax">
 			<td>Min: </td>
-			<td><input data-minmax="min" type="text" value="<% print((model.get('min') != null) ? model.get('min') : ''); %>"></td>
+			<td><input data-minmax="min" type="text" value="<% print((entity.get('min') != null) ? entity.get('min') : ''); %>"></td>
 			<td>
 				<input data-minmax="min" type="checkbox" id="<% print ([model.cid, 'max-auto'].join('-')); %>" />
 				<label for="<% print ([model.cid, 'min-auto'].join('-')); %>">auto</label>
@@ -10,7 +10,7 @@
 		</tr>
 		<tr class="max minmax">
 			<td>Max: </td>
-			<td><input data-minmax="max" type="text" value="<% print((model.get('max') != null) ? model.get('max') : ''); %>"></td>
+			<td><input data-minmax="max" type="text" value="<% print((entity.get('max') != null) ? entity.get('max') : ''); %>"></td>
 			<td>
 				<input data-minmax="max" type="checkbox" id="<% print ([model.cid, 'max-auto'].join('-')); %>" />
 				<label for="<% print ([model.cid, 'max-auto'].join('-')); %>">auto</label>

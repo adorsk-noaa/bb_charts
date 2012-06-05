@@ -27,19 +27,19 @@ function($, Backbone, _, ui, _s, NumericFieldView, template){
 			this.setNumBuckets();
 
 			// Listen for changes in classes.
-			this.model.on('change:num_buckets', function(){this.setNumBuckets()}, this);
+			this.entity.on('change:num_buckets', function(){this.setNumBuckets()}, this);
 
 		},
 
 		setNumBuckets: function(){
-			$('.classes input[type="text"]', this.el).val(this.model.get('num_buckets'));
+			$('.classes input[type="text"]', this.el).val(this.entity.get('num_buckets'));
 		},
 
 		onNumBucketsChange: function(e){
 			var $text = $(e.target);
 			var raw_val = $text.val();
 			var val = parseFloat(raw_val);
-			this.model.set('num_buckets', val);
+			this.entity.set('num_buckets', val);
 		}
 	});
 

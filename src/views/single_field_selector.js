@@ -19,45 +19,33 @@ function($, Backbone, _, ui, _s, CategoricalCategoryFieldView, NumericCategoryFi
 
 		initialize: function(opts){
 			$(this.el).addClass('field-selector single-field-selector');
-			this.rendered_field_definitions = {};
-
+			this.field_registry = {};
 			this.render();
 		},
 
 		render: function(){
-			this.clearFieldDefinitions();
+			this.clearFields();
 			$(this.el).html(_.template(template));
-			_.each(this.model.get('field_definitions'), function(field_definition){
-				this.addFieldDefinition(field_definition);
+			_.each(this.model.get('fields').models, function(field_model){
+				this.addField(field_model);
 			}, this);
 		},
 
-		addFieldDefinition: function(field_definition){
-			if (! this.rendered_field_definitions.hasOwnProperty(field_definition['field_id'])){
+		addField: function(field_model){
+			if (! this.field_registry.hasOwnProperty(field_model.cid)){
 
-				var field_option = $(_s.sprintf('<option value="%s">%s</option>', field_definition['field_id'], field_definition['label']));
+				var field_option = $(_s.sprintf('<option value="%s">%s</option>', field_model.cid, field_model.get('label')));
 				$('.field-picker-select', this.el).append(field_option);
-
-				var field_model = new Backbone.Model(field_definition);
 
 				var field_view = this.getFieldView(field_model);
 				$('.field-options', this.el).append(field_view.el);
 
-				this.rendered_field_definitions[field_definition['field_id']] = {
-					'field_id': field_definition['field_id'],
+				this.field_registry[field_model.cid] = {
+					'cid': field_model.cid,
 					'option': field_option,
 					'model': field_model,
 					'view': field_view
 				};
-			}
-		},
-
-		removeFieldDefinition: function(field_definition){
-			if (this.rendered_fields.hasOwnProperty(field_definition['field_id'])){
-				rendered_field_definition.option.remove();
-				rendered_field_definition.view.remove();
-				rendered_field_definition.model = null;
-				delete this.rendered_field_definitions[field_definition['field_id']];
 			}
 		},
 
@@ -85,10 +73,18 @@ function($, Backbone, _, ui, _s, CategoricalCategoryFieldView, NumericCategoryFi
 			});
 		},
 
-		clearFieldDefinitions: function(){
-			_.each(this.rendered_field_definitions, function(rendered_field_definition){
-				this.removeFieldDefinition(rendered_field_definition);
+		clearFields: function(){
+			_.each(this.field_registry, function(field){
+				this.removeField(field);
 			}, this);
+		},
+
+		removeField: function(field){
+			if (this.field_registry.hasOwnProperty(field.model.cid)){
+				field.option.remove();
+				field.view.remove();
+				delete this.field_registry[field.model.cid];
+			}
 		},
 
 		onFieldSelectChange: function(e){
@@ -97,17 +93,17 @@ function($, Backbone, _, ui, _s, CategoricalCategoryFieldView, NumericCategoryFi
 				this.selectInitialized = true;
 			}
 			if (this.model.get('selected_field')){
-				var previously_selected_id = this.model.get('selected_field').get('field_id');
-				$(this.rendered_field_definitions[previously_selected_id].view.el).removeClass('selected');
+				var previously_selected_cid = this.model.get('selected_field').cid;
+				$(this.field_registry[previously_selected_cid].view.el).removeClass('selected');
 			}
-			var selected_field_id = $('.field-picker-select option:selected', this.el).val();
-			var selected_field_view = this.rendered_field_definitions[selected_field_id].view;
+			var selected_cid = $('.field-picker-select option:selected', this.el).val();
+			var selected_field_view = this.field_registry[selected_cid].view;
 			$(selected_field_view.el).addClass('selected');
-			this.model.set({'selected_field': this.rendered_field_definitions[selected_field_id].model});
+			this.model.set({'selected_field': this.field_registry[selected_cid].model});
 		},
 
-		setSelectedField: function(field_id){
-			$('.field-picker-select', this.el).val(field_id).change();
+		setSelectedField: function(cid){
+			$('.field-picker-select', this.el).val(cid).change();
 		}
 
 	});
