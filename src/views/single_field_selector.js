@@ -92,6 +92,11 @@ function($, Backbone, _, ui, _s, CategoricalCategoryFieldView, NumericCategoryFi
 		},
 
 		onFieldSelectChange: function(e){
+			if (! this.selectInitialized){
+				console.log($('.field-picker-select option:first', this.el));
+				$('.field-picker-select option:first', this.el).remove();
+				this.selectInitialized = true;
+			}
 			if (this.model.get('selected_field')){
 				var previously_selected_id = this.model.get('selected_field').get('field_id');
 				$(this.rendered_field_definitions[previously_selected_id].view.el).removeClass('selected');
