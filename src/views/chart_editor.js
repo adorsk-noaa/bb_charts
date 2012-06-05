@@ -307,7 +307,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 				// Get min/max from data.
 				if (data.length > 1){
 					var dmin = data[0].min;
-					var dmax = data[data.length - 1].max;
+					var dmax = data[data.length - 1].min;
 
 					// Update category field min/max.
 					this.disconnectCategoryField(this.selected_category_field);

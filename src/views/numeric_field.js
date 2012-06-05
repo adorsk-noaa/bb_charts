@@ -27,7 +27,6 @@ function($, Backbone, _, ui, _s, template){
 				this.setMinMaxCheckbox(minmax);
 			},this);
 
-
 			this.entity.on('change', function(){this.model.trigger('change');}, this);
 			this.entity.on('change:min', function(){this.setMinMaxText('min')}, this);
 			this.entity.on('change:max', function(){this.setMinMaxText('max')}, this);
