@@ -143,10 +143,10 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 					series[k].push(formatted_point);
 
 					// Update max/min.
-					if (! (data_bounds.min < v.value)){
+					if (! (data_bounds.min < v.value) || data_bounds.min == null){
 						data_bounds.min = v.value;	
 					}
-					if (! (data_bounds.max > v.value)){
+					if (! (data_bounds.max > v.value) || data_bounds.max == null){
 						data_bounds.max = v.value;
 					}
 				}, this);
