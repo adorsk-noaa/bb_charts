@@ -4,13 +4,14 @@ define([
 	"use!underscore",
 	"use!ui",
 	"_s",
+	"Util",
 	"./single_field_selector",
 	"./quantity_field",
 	"./raw_chart",
 	"./jqplot_chart",
 	"text!./templates/chart_editor.html"
 		],
-function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, RawChartView, JqplotChartView, template){
+function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldView, RawChartView, JqplotChartView, template){
 
 	var ChartEditorView = Backbone.View.extend({
 
@@ -85,9 +86,7 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 		},
 
 		resize: function(){
-			var $c = this.$table.parent();
-			this.$table.css('width', $c.css('width'));
-			this.$table.css('height', $c.css('height'));
+			Util.util.fillParent(this.$table);
 			this.resizeVerticalTab();
 		},
 
