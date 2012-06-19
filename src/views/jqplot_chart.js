@@ -21,11 +21,15 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			this.padding = 0;
 
 			this.model.on('change', this.onChange, this);
+			this.on('ready', this.onReady, this);
 		},
 
 		initialRender: function(){
 			this.$body_container = $('<div class="body-container"></div>');
 			$(this.el).append(this.$body_container);
+		},
+
+		onReady: function(){
 			this.offsets = this.getBodyOffsets();
 			this.row_h = this.getRowHeight();
 			this.xaxis_h = this.getXAxisHeight();

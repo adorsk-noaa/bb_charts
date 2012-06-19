@@ -44,6 +44,9 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 
 			// Update the quantity field when the chart min/max attributes change.
 			this.model.get('chart').on('change:bounds', this.onChartBoundsChange, this);
+
+			// Listen for the ready event.
+			this.on('ready', this.onReady, this);
 			
 		},
 
@@ -340,7 +343,17 @@ function($, Backbone, _, ui, _s, SingleFieldSelectorView, QuantityFieldView, Raw
 		showChart: function(){
 			$('.chart-container > .chart',  this.el).css('visibility', 'visible');
 			$('.chart-container > .instructions',  this.el).css('visibility', 'hidden');
-		}
+		},
+
+		onReady: function(){
+			this.chart_view.trigger('ready');
+		},
+
+		activate: function(){
+		},
+
+		deactivate: function(){
+		},
 
 	});
 
