@@ -248,7 +248,9 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 			// Update quantity field to match chart bounds.
 			var set_data = {};
 			_.each(['min', 'max'], function(minmax){
-				set_data[minmax] = this.model.get('chart').get(minmax);
+				if (this.selected_quantity_field.get('entity').get(minmax + 'auto')){
+					set_data[minmax] = this.model.get('chart').get(minmax);
+				}
 			}, this);
 
 			this.selected_quantity_field.get('entity').set(set_data);

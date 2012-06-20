@@ -21,6 +21,7 @@ function($, Backbone, _, ui, _s, CategoricalCategoryFieldView, NumericCategoryFi
 			$(this.el).addClass('field-selector single-field-selector');
 			this.field_registry = {};
 			this.render();
+			this.model.on("change:selected_field", this.onChangeSelectedField, this);
 		},
 
 		render: function(){
@@ -100,6 +101,10 @@ function($, Backbone, _, ui, _s, CategoricalCategoryFieldView, NumericCategoryFi
 			var selected_field_view = this.field_registry[selected_cid].view;
 			$(selected_field_view.el).addClass('selected');
 			this.model.set({'selected_field': this.field_registry[selected_cid].model});
+		},
+
+		onChangeSelectedField: function(){
+			this.setSelectedField(this.model.get('selected_field').cid);
 		},
 
 		setSelectedField: function(cid){
