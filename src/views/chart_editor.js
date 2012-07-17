@@ -269,28 +269,10 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 
 		updateDatasourceQuery: function(){
 			var q = this.model.get('datasource').get('query');
-
-			var grouping_entity;
-			if (this.selected_category_field){
-				grouping_entity = this.selected_category_field.get('entity').toJSON();
-				// If minauto or maxauto is enabled, don't send min/max.
-				_.each(['min', 'max'], function(minmax){
-					if (grouping_entity[minmax + 'auto']){
-						delete grouping_entity[minmax];
-					}
-				}, this);
-			}
-
-			var data_entity;
-			if (this.selected_quantity_field){
-				data_entity =this.selected_quantity_field.get('entity').toJSON();
-			}
-
 			q.set({
-				'grouping_entities': (grouping_entity) ? [grouping_entity] : [],
-				'data_entities': (data_entity) ? [data_entity] : []
+				'category_field': this.selected_category_field,
+				'quantity_field': this.selected_quantity_field
 			});
-
 		},
 
 		onDatasourceQueryChange: function(){
