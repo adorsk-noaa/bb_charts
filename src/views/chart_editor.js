@@ -223,7 +223,7 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 		},
 
 		connectCategoryField: function(field){
-			field.on('change', this.onDatasourceQueryChange, this);
+			field.on('change', this.onCategoryFieldChange, this);
 		},
 
 		disconnectCategoryField: function(field){
@@ -231,11 +231,11 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 		},
 
 		onCategoryFieldChange: function(){
-			this.updateDatasourceQuery();
+			this.onDatasourceQueryChange();
 		},
 
 		connectQuantityField: function(field){
-			field.on('change', this.onDatasourceQueryChange, this);
+			field.on('change', this.onQuantityFieldChange, this);
 		},
 
 		disconnectQuantityField: function(field){
@@ -304,23 +304,31 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 			// Update the chart's data.
 			var data = this.model.get('datasource').get('data');
 			this.model.get('chart').set('data', data);
+
+            // Don't do anything else if data is blank.
+            if (! data.length > 0){
+                return;
+            }
+
+            // Otherwise...
 			
-			// If currently selected category field is numeric, update is min/max.
+			// If currently selected category field is numeric, update min/max.
 			if (this.selected_category_field && this.selected_category_field.get('value_type') == 'numeric'){
 
 				// Get min/max from data.
-				if (data.length > 1){
-					var dmin = data[0].min;
-					var dmax = data[data.length - 1].min;
+                var dmin = (data[0].min == -Number.MAX_VALUE) ? data[0].max : data[0].min;
+                var dmax = data[0].max;
+                if (data.length > 1){
+                    dmax = (data[data.length - 1].max == Number.MAX_VALUE) ? data[data.length - 1].min : data[data.length -1].max;
+                }
 
-					// Update category field min/max.
-					this.disconnectCategoryField(this.selected_category_field);
-					this.selected_category_field.get('entity').set({
-						min: dmin,
-						max: dmax
-					});
-					this.connectCategoryField(this.selected_category_field);
-				}
+                // Update category field min/max.
+                this.disconnectCategoryField(this.selected_category_field);
+                this.selected_category_field.get('entity').set({
+                    min: dmin,
+                    max: dmax
+                });
+                this.connectCategoryField(this.selected_category_field);
 			}
 
 		},
