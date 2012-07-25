@@ -4,12 +4,13 @@ define([
 	"use!underscore",
 	"use!ui",
 	"_s",
+	"Util",
 	"./categorical_category_field",
 	"./numeric_category_field",
 	"./numeric_quantity_field",
 	"text!./templates/single_field_selector.html"
 		],
-function($, Backbone, _, ui, _s, CategoricalCategoryFieldView, NumericCategoryFieldView, NumericQuantityFieldView, template){
+function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCategoryFieldView, NumericQuantityFieldView, template){
 
 	var SingleFieldSelectorView = Backbone.View.extend({
 
@@ -20,33 +21,66 @@ function($, Backbone, _, ui, _s, CategoricalCategoryFieldView, NumericCategoryFi
 		initialize: function(opts){
 			$(this.el).addClass('field-selector single-field-selector');
 			this.field_registry = {};
-			this.render();
+            this.initialRender();
 			this.model.on("change:selected_field", this.onChangeSelectedField, this);
 		},
 
-		render: function(){
-			this.clearFields();
+        initialRender: function(){
 			$(this.el).html(_.template(template));
+
+            // Setup the field selector.
+            this.field_select = new Util.views.InfoSelectView({
+                el: $('.field-picker-info-select', this.el),
+                model: new Backbone.Model({
+                    choices: []
+                })
+            });
+            this.field_select.model.on('change:selection', this.onFieldSelectChange, this);
+            
+			this.renderFields();
+        },
+
+		renderFields: function(){
+			this.unregisterFields();
+            var choices = [];
 			_.each(this.model.get('fields').models, function(field_model){
-				this.addField(field_model);
+				var field = this.getRegisteredField(field_model);
+				$('.field-options', this.el).append(field.view.el);
+                choices.push(field.choice);
 			}, this);
+
+            this.field_select.model.set('choices', choices); 
 		},
 
-		addField: function(field_model){
+		getRegisteredField: function(field_model){
 			if (! this.field_registry.hasOwnProperty(field_model.cid)){
-
-				var field_option = $(_s.sprintf('<option value="%s">%s</option>', field_model.cid, field_model.get('label')));
-				$('.field-picker-select', this.el).append(field_option);
-
+				var field_choice = {
+                    value: field_model.cid,
+                    label: field_model.get('label'),
+                    info: field_model.get('info')
+                };
 				var field_view = this.getFieldView(field_model);
-				$('.field-options', this.el).append(field_view.el);
-
 				this.field_registry[field_model.cid] = {
 					'cid': field_model.cid,
-					'option': field_option,
+					'choice': field_choice,
 					'model': field_model,
 					'view': field_view
 				};
+			}
+
+            return this.field_registry[field_model.cid];
+		},
+
+		unregisterFields: function(){
+			_.each(this.field_registry, function(field){
+				this.unregisterField(field);
+			}, this);
+		},
+
+		unregisterField: function(field){
+			if (this.field_registry.hasOwnProperty(field.model.cid)){
+				field.view.remove();
+				delete this.field_registry[field.model.cid];
 			}
 		},
 
@@ -74,41 +108,20 @@ function($, Backbone, _, ui, _s, CategoricalCategoryFieldView, NumericCategoryFi
 			});
 		},
 
-		clearFields: function(){
-			_.each(this.field_registry, function(field){
-				this.removeField(field);
-			}, this);
-		},
-
-		removeField: function(field){
-			if (this.field_registry.hasOwnProperty(field.model.cid)){
-				field.option.remove();
-				field.view.remove();
-				delete this.field_registry[field.model.cid];
-			}
-		},
 
 		onFieldSelectChange: function(e){
-			if (! this.selectInitialized){
-				$('.field-picker-select option:first', this.el).remove();
-				this.selectInitialized = true;
-			}
 			if (this.model.get('selected_field')){
 				var previously_selected_cid = this.model.get('selected_field').cid;
 				$(this.field_registry[previously_selected_cid].view.el).removeClass('selected');
 			}
-			var selected_cid = $('.field-picker-select option:selected', this.el).val();
+			var selected_cid = this.field_select.model.get('selection');
 			var selected_field_view = this.field_registry[selected_cid].view;
 			$(selected_field_view.el).addClass('selected');
 			this.model.set({'selected_field': this.field_registry[selected_cid].model});
 		},
 
 		onChangeSelectedField: function(){
-			this.setSelectedField(this.model.get('selected_field').cid);
-		},
-
-		setSelectedField: function(cid){
-			$('.field-picker-select', this.el).val(cid).change();
+            this.field_select.model.set('selection', this.model.get('selected_field').cid);
 		}
 
 	});
