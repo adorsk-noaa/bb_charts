@@ -223,7 +223,7 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 		},
 
 		connectCategoryField: function(field){
-			field.on('change', this.onCategoryFieldChange, this);
+			field.on('change', this.onDatasourceQueryChange, this);
 		},
 
 		disconnectCategoryField: function(field){
@@ -235,7 +235,7 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 		},
 
 		connectQuantityField: function(field){
-			field.on('change', this.onQuantityFieldChange, this);
+			field.on('change', this.onDatasourceQueryChange, this);
 		},
 
 		disconnectQuantityField: function(field){
