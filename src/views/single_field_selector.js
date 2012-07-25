@@ -23,6 +23,9 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
 			this.field_registry = {};
             this.initialRender();
 			this.model.on("change:selected_field", this.onChangeSelectedField, this);
+
+            this.on("ready", this.onReady, this);
+            this.on("resizeStop", this.onResizeStop, this);
 		},
 
         initialRender: function(){
@@ -122,7 +125,19 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
 
 		onChangeSelectedField: function(){
             this.field_select.model.set('selection', this.model.get('selected_field').cid);
-		}
+		},
+
+        onReady: function(){
+            this.field_select.trigger("ready");
+        },
+
+        onResizeStop: function(){
+            // Resize fieldsets.
+            var $field_picker = $('> .field-picker', this.el);
+            $field_picker.children('fieldset').outerWidth($field_picker.width());
+            this.field_select.trigger("resizeStop");
+        }
+        
 
 	});
 

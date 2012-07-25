@@ -27,6 +27,7 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 			this.resize();
 			this.resizeStop();
 
+
 			var ds = this.model.get('datasource');
 			var schema = ds.get('schema');
 
@@ -42,6 +43,13 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 			// Change the datasource query when the field selectors change.
 			this.category_field_selector.model.on('change:selected_field', this.onSelectedCategoryFieldChange, this);
 			this.quantity_field_selector.model.on('change:selected_field', this.onSelectedQuantityFieldChange, this);
+
+            // Save subviews.
+            this.sub_views = [
+                this.category_field_selector,
+                this.quantity_field_selector,
+                this.chart_view
+                    ];
 
 			// Update the quantity field when the chart min/max attributes change.
 			this.model.get('chart').on('change:bounds', this.onChartBoundsChange, this);
@@ -99,6 +107,10 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 		resizeStop: function(){
 			this.resizeChart();
 			this.resizeLoadingAnimation();
+
+            _.each(this.sub_views, function(v){
+                v.trigger('resizeStop');
+            });
 		},
 
 		resizeVerticalTab: function(){
@@ -335,7 +347,9 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 		},
 
 		onReady: function(){
-			this.chart_view.trigger('ready');
+            _.each(this.sub_views, function(v){
+                v.trigger('ready');
+            });
 		},
 
 		activate: function(){
