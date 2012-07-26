@@ -1,16 +1,14 @@
 define([
 		'./chart',
-		'./xy_chart',
-		'./tree_chart',
+        './xy_chart',
 		'./data_source',
 		'./schema'
 ], 
-function(ChartModel, XYChartModel, TreeChartModel, DataSourceModel, SchemaModel){
+function(ChartModel, XYChartModel, DataSourceModel, SchemaModel){
 
 	models = {
 		'ChartModel': ChartModel,
-		'XYChartModel': XYChartModel,
-		'TreeChartModel': TreeChartModel,
+        'XYChartModel': XYChartModel,
 		'DataSourceModel': DataSourceModel,
 		'SchemaModel': SchemaModel
 	};

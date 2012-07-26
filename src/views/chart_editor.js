@@ -7,11 +7,10 @@ define([
 	"Util",
 	"./single_field_selector",
 	"./quantity_field",
-	"./raw_chart",
 	"./jqplot_chart",
 	"text!./templates/chart_editor.html"
 		],
-function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldView, RawChartView, JqplotChartView, template){
+function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldView, JqplotChartView, template){
 
 	var ChartEditorView = Backbone.View.extend({
 
