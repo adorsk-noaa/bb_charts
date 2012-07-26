@@ -12,7 +12,7 @@ function($, Backbone, _, ui, _s, NumericFieldView, template){
 	var NumericCategoryFieldView = NumericFieldView.extend({
 
 		events: _.extend({}, NumericFieldView.prototype.events, {
-			'change .classes input[type="text"]': 'onNumBucketsChange'
+			'change .classes input[type="text"]': 'onNumClassesChange'
 		}),
 
 		initialize: function(opts){
@@ -24,22 +24,22 @@ function($, Backbone, _, ui, _s, NumericFieldView, template){
 			NumericFieldView.prototype.initialize.call(this, opts);
 
 			// Set initial properties on inputs.
-			this.setNumBuckets();
+			this.setNumClasses();
 
 			// Listen for changes in classes.
-			this.entity.on('change:num_buckets', function(){this.setNumBuckets()}, this);
+			this.entity.on('change:num_classes', function(){this.setNumClasses()}, this);
 
 		},
 
-		setNumBuckets: function(){
-			$('.classes input[type="text"]', this.el).val(this.entity.get('num_buckets'));
+		setNumClasses: function(){
+			$('.classes input[type="text"]', this.el).val(this.entity.get('num_classes'));
 		},
 
-		onNumBucketsChange: function(e){
+		onNumClassesChange: function(e){
 			var $text = $(e.target);
 			var raw_val = $text.val();
 			var val = parseFloat(raw_val);
-			this.entity.set('num_buckets', val);
+			this.entity.set('num_classes', val);
 		}
 	});
 
