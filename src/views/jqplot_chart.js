@@ -247,7 +247,7 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 		},
 
 		formatQuantityLabel: function(formatString, value){
-			return value.toPrecision(3);
+            return value;
 		},
 
 		onDataChange: function(){
