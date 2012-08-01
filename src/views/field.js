@@ -14,7 +14,6 @@ function($, Backbone, _, ui, _s){
 		},
 
         remove: function(){
-            console.log("removing field", this);
 	        Backbone.View.prototype.remove.apply(this, arguments);
             this.model.off();
             this.off();

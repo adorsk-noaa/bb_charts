@@ -262,7 +262,6 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer){
 		},
 
         remove: function(){
-            console.log('removing chart');
             if (this.$b){
                 this.$b.remove();
             }

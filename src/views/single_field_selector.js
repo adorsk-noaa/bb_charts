@@ -140,7 +140,6 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
         },
 
         remove: function(){
-            console.log("removing field selector", this);
 	        Backbone.View.prototype.remove.apply(this, arguments);
             this.unregisterFields();
             this.model.off();

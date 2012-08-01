@@ -382,7 +382,6 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
 		},
 
         remove: function(){
-            console.log("removing chart editor")
 	        Backbone.View.prototype.remove.apply(this, arguments);
             _.each(this.subViews, function(v){
                 v.trigger('remove');
