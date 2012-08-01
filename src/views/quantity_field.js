@@ -3,16 +3,16 @@ define([
 	"use!backbone",
 	"use!underscore",
 	"use!ui",
-	"_s",
+	"use!_s",
+    "./field"
 		],
-function($, Backbone, _, ui, _s){
+function($, Backbone, _, ui, _s, FieldView){
 
-	var QuantityFieldView = Backbone.View.extend({
-
+	var QuantityFieldView = FieldView.extend({
 		initialize: function(opts){
-			$(this.el).addClass('field quantity-field');
-		}
-
+            FieldView.prototype.initialize.call(this, arguments);
+			$(this.el).addClass('quantity-field');
+		},
 	});
 
 	return QuantityFieldView;

@@ -4,24 +4,29 @@ define([
 	"use!underscore",
 	"use!ui",
 	"_s",
+	"./category_field",
 	"./numeric_field",
 	"text!./templates/numeric_category_field.html"
 		],
-function($, Backbone, _, ui, _s, NumericFieldView, template){
+function($, Backbone, _, ui, _s, CategoryFieldView, NumericFieldView, template){
 
-	var NumericCategoryFieldView = NumericFieldView.extend({
+	var NumericCategoryFieldView = CategoryFieldView.extend(NumericFieldView.prototype).extend({
 
 		events: _.extend({}, NumericFieldView.prototype.events, {
 			'change .classes input[type="text"]': 'onNumClassesChange'
 		}),
 
 		initialize: function(opts){
+
 			if (! opts){
 				opts = {};
 			}
-			$(this.el).addClass('field category-field numeric-category-field');
+			$(this.el).addClass('numeric-category-field');
 			opts.template = opts.template || template;
-			NumericFieldView.prototype.initialize.call(this, opts);
+
+			CategoryFieldView.prototype.initialize.apply(this, arguments);
+            console.log("calling numeric");
+			NumericFieldView.prototype.initialize.apply(this, arguments);
 
 			// Set initial properties on inputs.
 			this.setNumClasses();

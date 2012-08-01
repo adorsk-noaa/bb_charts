@@ -26,6 +26,7 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
 
             this.on("ready", this.onReady, this);
             this.on("resizeStop", this.onResizeStop, this);
+            this.on("remove", this.remove, this);
 		},
 
         initialRender: function(){
@@ -82,7 +83,7 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
 
 		unregisterField: function(field){
 			if (this.field_registry.hasOwnProperty(field.model.cid)){
-				field.view.remove();
+				field.view.trigger('remove');
 				delete this.field_registry[field.model.cid];
 			}
 		},
@@ -136,6 +137,14 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
             var $field_picker = $('> .field-picker', this.el);
             $field_picker.children('fieldset').outerWidth($field_picker.width());
             this.field_select.trigger("resizeStop");
+        },
+
+        remove: function(){
+            console.log("removing field selector", this);
+	        Backbone.View.prototype.remove.apply(this, arguments);
+            this.unregisterFields();
+            this.model.off();
+            this.off();
         }
         
 

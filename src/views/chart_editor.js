@@ -6,11 +6,10 @@ define([
 	"_s",
 	"Util",
 	"./single_field_selector",
-	"./quantity_field",
 	"./jqplot_chart",
 	"text!./templates/chart_editor.html"
 		],
-function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldView, JqplotChartView, template){
+function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView, template){
 
 	var ChartEditorView = Backbone.View.extend({
 
@@ -41,16 +40,16 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 			
 			// Change the datasource query when the field selectors change.
             _.each(['category', 'quantity'], function(fieldCategory){
-                var selector = this[fieldCategory + '_field_selector'];
+                var selector = this.fieldSelectors[fieldCategory];
 			    selector.model.on('change:selected_field', function(){
                     this.onSelectedFieldChange({fieldCategory: fieldCategory});
                 }, this);
             }, this);
 
             // Save subviews.
-            this.sub_views = [
-                this.category_field_selector,
-                this.quantity_field_selector,
+            this.subViews = [
+                this.fieldSelectors['category'],
+                this.fieldSelectors['quantity'],
                 this.chart_view
                     ];
 
@@ -79,21 +78,17 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 			var ds = this.model.get('datasource');
 			var schema = ds.get('schema');
 
-			this.category_field_selector = new SingleFieldSelectorView({
-				el: $('.category-field', this.el),
-				model: new Backbone.Model({
-					fields: schema.get('category_fields'),
-					selected_field: null
-				})
-			});
-
-			this.quantity_field_selector = new SingleFieldSelectorView({
-				el: $('.quantity-field', this.el),
-				model: new Backbone.Model({
-					fields: schema.get('quantity_fields'),
-					selected_field: null
-				})
-			});
+            this.fieldSelectors = {};
+            _.each(['category', 'quantity'], function(fieldCategory){
+                var selector = new SingleFieldSelectorView({
+                    el: $('.' + fieldCategory + '-field', this.el),
+                    model: new Backbone.Model({
+                        fields: schema.get(fieldCategory + '_fields'),
+                        selected_field: null
+                    })
+                });
+                this.fieldSelectors[fieldCategory] = selector;
+            }, this);
 
 			// Add chart view.
 			this.chart_view = new JqplotChartView({
@@ -111,7 +106,7 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 			this.resizeChart();
 			this.resizeLoadingAnimation();
 
-            _.each(this.sub_views, function(v){
+            _.each(this.subViews, function(v){
                 v.trigger('resizeStop');
             });
 		},
@@ -206,7 +201,7 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 		onSelectedFieldChange: function(opts){
             opts = opts || {};
             // Get selector and (dis)connector functions.
-            var selector = this[opts.fieldCategory + '_field_selector'];
+            var selector = this.fieldSelectors[opts.fieldCategory];
             var capFieldCategory = _s.capitalize(opts.fieldCategory);
             var connect = this['connect' + capFieldCategory + 'Field'];
             var disconnect = this['disconnect' + capFieldCategory + 'Field'];
@@ -375,7 +370,7 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 		},
 
 		onReady: function(){
-            _.each(this.sub_views, function(v){
+            _.each(this.subViews, function(v){
                 v.trigger('ready');
             });
 		},
@@ -385,6 +380,16 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, QuantityFieldVie
 
 		deactivate: function(){
 		},
+
+        remove: function(){
+            console.log("removing chart editor")
+	        Backbone.View.prototype.remove.apply(this, arguments);
+            _.each(this.subViews, function(v){
+                v.trigger('remove');
+            });
+            this.model.off();
+            this.off();
+        }
 
 	});
 

@@ -4,14 +4,15 @@ define([
 	"use!underscore",
 	"use!ui",
 	"_s",
+	"./quantity_field",
 	"./numeric_field",
 		],
-function($, Backbone, _, ui, _s, NumericFieldView){
+function($, Backbone, _, ui, _s, QuantityFieldView, NumericFieldView){
 
-	var NumericQuantityFieldView = NumericFieldView.extend({
-
-		initialize: function(opts){
+	var NumericQuantityFieldView = QuantityFieldView.extend(NumericFieldView.prototype).extend({
+        initialize: function(opts){
 			$(this.el).addClass('field quantity-field numeric-quantity-field');
+			QuantityFieldView.prototype.initialize.apply(this, arguments);
 			NumericFieldView.prototype.initialize.apply(this, arguments);
 		}
 	});

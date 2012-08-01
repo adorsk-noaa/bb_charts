@@ -7,11 +7,10 @@ define([
 	"use!jqplot",
 	"use!jqp_bar",
 	"use!jqp_cat_axis_renderer",
-	"./chart",
 		],
-function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
+function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer){
 
-	var JqPlotChartView = ChartView.extend({
+	var JqPlotChartView = Backbone.View.extend({
 
 		initialize: function(opts){
 			$(this.el).addClass('jqplot-chart');
@@ -22,6 +21,7 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 
 			this.model.on('change', this.onChange, this);
 			this.on('ready', this.onReady, this);
+            this.on('remove', this.remove, this);
 		},
 
 		initialRender: function(){
@@ -239,7 +239,7 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 			};
 			
 			// Create the plot.
-			this.$b.jqplot(this.plot);
+			this.chart = this.$b.jqplot(this.plot);
 		},
 
 		formatDatumLabel: function(datum){
@@ -256,7 +256,15 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer, ChartView){
 
 		resize: function(){
 			this.render();
-		}
+		},
+
+        remove: function(){
+            console.log('removing chart');
+            this.chart.destroy();
+            Backbone.View.prototype.remove.call(this, arguments);
+            this.model.off();
+            this.off();
+        }
 
 	});
 

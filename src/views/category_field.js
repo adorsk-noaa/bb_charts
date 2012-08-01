@@ -3,16 +3,16 @@ define([
 	"use!backbone",
 	"use!underscore",
 	"use!ui",
-	"_s"
+	"_s",
+	"./field"
 		],
-function($, Backbone, _, ui, _s, template){
+function($, Backbone, _, ui, _s, FieldView){
 
-	var CategoryFieldView = Backbone.View.extend({
-
+	var CategoryFieldView = FieldView.extend({
 		initialize: function(opts){
-			$(this.el).addClass('field category-field');
+            FieldView.prototype.initialize.call(this, arguments);
+			$(this.el).addClass('category-field');
 		},
-
 	});
 
 	return CategoryFieldView;
