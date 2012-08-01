@@ -7,15 +7,17 @@ var DataSourceModel = Backbone.Model.extend({
 
 	defaults: {
 		schema: {},
-		query: new Backbone.Model({
-			'data_entities': [],
-			'grouping_entities': [],
-			'filters': []
-		}),
 		dataStore: {}
 	},
 
 	initialize: function(){
+        if (! this.get('query')){
+            this.set('query', new Backbone.Model({
+                'data_entities': [],
+                'grouping_entities': [],
+                'filters': []
+            }));
+        }
 	},
 
 	getSchema: function(){
