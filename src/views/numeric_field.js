@@ -8,7 +8,7 @@ define([
 		],
 function($, Backbone, _, ui, _s, template){
 
-	var NumericFieldView = Backbone.View.extend({
+    var NumericFieldView = Backbone.View.extend({
 
 		events: {
 			'change .minmax input[type="text"]': 'onMinMaxTextChange',
@@ -88,7 +88,7 @@ function($, Backbone, _, ui, _s, template){
 			}
 		}
 
-	});
+    });
 
 	return NumericFieldView;
 });

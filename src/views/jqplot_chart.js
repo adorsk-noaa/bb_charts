@@ -109,6 +109,9 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer){
 			data.reverse();
 
 			// Render empty chart container.
+            if (this.$b){
+                this.$b.remove();
+            }
 			this.$body_container.html('');
 			this.$b = $('<div class="body"></div>');
 			this.$body_container.append(this.$b);
@@ -220,8 +223,8 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer){
 				max: this.model.get('max')
 			};
 
-			// Make plot object.
-			this.plot = {
+			// Make plot definition.
+			this.plotDef = {
 				data: series_lists,
 				title: this.model.get('title'),
 				seriesDefaults:{
@@ -239,7 +242,7 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer){
 			};
 			
 			// Create the plot.
-			this.chart = this.$b.jqplot(this.plot);
+			this.$b.jqplot(this.plotDef);
 		},
 
 		formatDatumLabel: function(datum){
@@ -260,7 +263,9 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer){
 
         remove: function(){
             console.log('removing chart');
-            this.chart.destroy();
+            if (this.$b){
+                this.$b.remove();
+            }
             Backbone.View.prototype.remove.call(this, arguments);
             this.model.off();
             this.off();

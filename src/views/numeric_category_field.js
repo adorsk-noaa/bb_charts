@@ -25,7 +25,6 @@ function($, Backbone, _, ui, _s, CategoryFieldView, NumericFieldView, template){
 			opts.template = opts.template || template;
 
 			CategoryFieldView.prototype.initialize.apply(this, arguments);
-            console.log("calling numeric");
 			NumericFieldView.prototype.initialize.apply(this, arguments);
 
 			// Set initial properties on inputs.
@@ -45,7 +44,12 @@ function($, Backbone, _, ui, _s, CategoryFieldView, NumericFieldView, template){
 			var raw_val = $text.val();
 			var val = parseFloat(raw_val);
 			this.entity.set('num_classes', val);
-		}
+		},
+
+        remove: function(){
+            NumericFieldView.prototype.remove.apply(this, arguments);
+            CategoryFieldView.prototype.remove.apply(this, arguments);
+        }
 	});
 
 	return NumericCategoryFieldView;
