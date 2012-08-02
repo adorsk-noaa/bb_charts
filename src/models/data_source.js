@@ -5,11 +5,6 @@ function(Backbone){
 
 var DataSourceModel = Backbone.Model.extend({
 
-	defaults: {
-		schema: {},
-		dataStore: {}
-	},
-
 	initialize: function(){
         if (! this.get('query')){
             this.set('query', new Backbone.Model({
@@ -18,14 +13,18 @@ var DataSourceModel = Backbone.Model.extend({
                 'filters': []
             }));
         }
+
+        this.on('remove', this.remove, this);
 	},
 
-	getSchema: function(){
-		return this.schema;
-	},
-
-	getData: function(opts){
-	}
+    remove: function(){
+        _.each(['query', 'schema'], function(subModelAttr){
+            var subModel = this.get(subModelAttr);
+            subModel.trigger('remove');
+            subModel.off();
+        }, this);
+        this.off();
+    }
 
 });
 

@@ -25,7 +25,6 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
 			this.resize();
 			this.resizeStop();
 
-
 			var ds = this.model.get('datasource');
 			var schema = ds.get('schema');
 
@@ -386,6 +385,14 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
             _.each(this.subViews, function(v){
                 v.trigger('remove');
             });
+
+            _.each(['datasource'], function(subModelAttr){
+                var subModel = this.model.get(subModelAttr);
+                if (subModel){
+                    subModel.trigger('remove');
+                    subModel.off();
+                }
+            }, this);
             this.model.off();
             this.off();
         }
