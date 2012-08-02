@@ -213,14 +213,40 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer){
 
 			series_lists.reverse();
 			series_options.reverse();
+            
+            // Configure xaxis minmax.
+            var setObj = {};
+            _.each(['min', 'max'], function(minmax){
+                var minmaxVal = this.model.get(minmax);
+                // If auto and not 0, use padding.
+                if (this.model.get(minmax + 'auto') && this.model.get(minmax) != 0){
+                    var padPct = .03;
+                    // If min is >= 0, don't pad below 0.
+                    if (minmax == 'min' && minmaxVal >= 0){
+                        var padMin = minmaxVal - minmaxVal * padPct
+                        if (padMin < 0){
+                            setObj['min'] = 0;
+                        }
+                    }
+                    // Otherwise pad by padFactor.
+                    else{
+                        var sign = (minmax == 'min') ? -1.0 : 1.0;
+                        var padValue = minmaxVal + (minmaxVal * padPct * sign);
+                        setObj[minmax] = padValue;
+                    }
+                }
+            }, this);
+            if (setObj){
+                this.model.set(setObj, {silent: true});
+            }
 
-			// configure xaxis.
+			// Set xaxis properties.
 			var xaxis = {
 				tickOptions:{
 					formatter: this.formatQuantityLabel
 				},
 				min: this.model.get('min'),
-				max: this.model.get('max')
+				max: this.model.get('max'),
 			};
 
 			// Make plot definition.
