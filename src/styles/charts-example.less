@@ -76,11 +76,24 @@
 
 			.title {
 				.button;
-				display: inline-block;
 				.rounded_corners(@tab_corner_radius);
+				display: block;
+                margin-left: auto;
+                margin-right: auto;
 				margin: @padding_tight;
 				font-size: 18px;
 				padding: 1px @padding_looser;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+
+                .field-name{
+                    display: inline-block;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    max-width: 50%;
+                }
 
 				button.toggle {
 					.button;
