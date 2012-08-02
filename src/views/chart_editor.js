@@ -208,11 +208,11 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
             // Get the old field (if any) and disconnect.
             var oldField = this.model.get(opts.fieldCategory + '_field');
 			if (oldField){
-                disconnect(oldField);
+                disconnect.call(this, oldField);
 			}
             // Get the new new field and connect it.
 			var newField = selector.model.get('selected_field');
-			connect(newField);
+			connect.call(this, newField);
 
             // Update the view.
 			$('.' + opts.fieldCategory + '-field-name', this.el).html(newField.get('label'));
@@ -222,7 +222,7 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
 		},
 
 		connectCategoryField: function(field){
-			field.on('change', this.onCategoryFieldChange, this);
+			field.get('entity').on('change', this.onCategoryFieldChange, this);
 		},
 
 		disconnectCategoryField: function(field){
@@ -234,7 +234,7 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
 		},
 
 		connectQuantityField: function(field){
-			field.on('change', this.onQuantityFieldChange, this);
+			field.get('entity').on('change', this.onQuantityFieldChange, this);
 		},
 
 		disconnectQuantityField: function(field){
