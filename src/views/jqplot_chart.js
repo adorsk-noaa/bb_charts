@@ -223,7 +223,7 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer){
                     var padPct = .03;
                     // If min is >= 0, don't pad below 0.
                     if (minmax == 'min' && minmaxVal >= 0){
-                        var padMin = minmaxVal - minmaxVal * padPct
+                        var padMin = minmaxVal - Math.abs(minmaxVal) * padPct
                         if (padMin < 0){
                             setObj['min'] = 0;
                         }
@@ -231,7 +231,7 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer){
                     // Otherwise pad by padFactor.
                     else{
                         var sign = (minmax == 'min') ? -1.0 : 1.0;
-                        var padValue = minmaxVal + (minmaxVal * padPct * sign);
+                        var padValue = minmaxVal + (Math.abs(minmaxVal) * padPct * sign);
                         setObj[minmax] = padValue;
                     }
                 }
