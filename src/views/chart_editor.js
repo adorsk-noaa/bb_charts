@@ -278,8 +278,8 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
 
 			if (cField && qField){
 				var chart_title = _s.sprintf('%s, by %s', 
-						cField.get('label'),
-						qField.get('label')
+						qField.get('label'),
+						cField.get('label')
 						);
 				this.model.get('chart').set('title', chart_title);
 			}
