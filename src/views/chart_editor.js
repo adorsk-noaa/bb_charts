@@ -22,8 +22,6 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
 			$(this.el).addClass('chart-editor');
 			this.render();
 			this.showInstructions();
-			this.resize();
-			this.resizeStop();
 
 			var ds = this.model.get('datasource');
 			var schema = ds.get('schema');
@@ -372,6 +370,8 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
             _.each(this.subViews, function(v){
                 v.trigger('ready');
             });
+			this.resize();
+			this.resizeStop();
 		},
 
 		activate: function(){
