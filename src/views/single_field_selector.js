@@ -130,7 +130,12 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
 		},
 
 		onChangeSelectedField: function(){
-            this.field_select.model.set('selection', this.model.get('selected_field').cid);
+            var selectedField = this.model.get('selected_field');
+            var selection = null;
+            if (selectedField && selectedField.cid){
+                selection = selectedField.cid;
+            }
+            this.field_select.model.set('selection', selection);
 		},
 
         onReady: function(){
