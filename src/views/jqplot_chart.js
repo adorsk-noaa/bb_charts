@@ -34,6 +34,8 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer){
 			this.row_h = this.getRowHeight();
 			this.xaxis_h = this.getXAxisHeight();
 			this.title_h = this.getTitleHeight();
+
+            this.render();
 		},
 
 		// Get body container offsets (scrollbars).

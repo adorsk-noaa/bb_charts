@@ -372,6 +372,12 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
             });
 			this.resize();
 			this.resizeStop();
+
+            // If there is data, show the chart.
+            var data = this.model.get('datasource').get('data');
+            if (data && data instanceof Array && data.length > 0){
+				this.showChart();
+            }
 		},
 
 		activate: function(){
