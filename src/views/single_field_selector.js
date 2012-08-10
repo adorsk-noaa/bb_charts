@@ -20,7 +20,7 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
 
 		initialize: function(opts){
 			$(this.el).addClass('field-selector single-field-selector');
-			this.field_registry = {};
+			this.fieldRegistry = {};
             this.initialRender();
 			this.model.on("change:selected_field", this.onChangeSelectedField, this);
 
@@ -39,9 +39,14 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
                     choices: []
                 })
             });
-            this.field_select.model.on('change:selection', this.onFieldSelectChange, this);
-            
+
+            // Render initial fields.
 			this.renderFields();
+
+            // Set selected field.
+            this.onChangeSelectedField();
+
+            this.field_select.model.on('change:selection', this.onFieldSelectChange, this);
         },
 
 		renderFields: function(){
@@ -57,14 +62,14 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
 		},
 
 		getRegisteredField: function(field_model){
-			if (! this.field_registry.hasOwnProperty(field_model.cid)){
+			if (! this.fieldRegistry.hasOwnProperty(field_model.cid)){
 				var field_choice = {
                     value: field_model.cid,
                     label: field_model.get('label'),
                     info: field_model.get('info')
                 };
 				var field_view = this.getFieldView(field_model);
-				this.field_registry[field_model.cid] = {
+				this.fieldRegistry[field_model.cid] = {
 					'cid': field_model.cid,
 					'choice': field_choice,
 					'model': field_model,
@@ -72,19 +77,19 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
 				};
 			}
 
-            return this.field_registry[field_model.cid];
+            return this.fieldRegistry[field_model.cid];
 		},
 
 		unregisterFields: function(){
-			_.each(this.field_registry, function(field){
+			_.each(this.fieldRegistry, function(field){
 				this.unregisterField(field);
 			}, this);
 		},
 
 		unregisterField: function(field){
-			if (this.field_registry.hasOwnProperty(field.model.cid)){
+			if (this.fieldRegistry.hasOwnProperty(field.model.cid)){
 				field.view.trigger('remove');
-				delete this.field_registry[field.model.cid];
+				delete this.fieldRegistry[field.model.cid];
 			}
 		},
 
@@ -116,12 +121,12 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
 		onFieldSelectChange: function(e){
 			if (this.model.get('selected_field')){
 				var previously_selected_cid = this.model.get('selected_field').cid;
-				$(this.field_registry[previously_selected_cid].view.el).removeClass('selected');
+				$(this.fieldRegistry[previously_selected_cid].view.el).removeClass('selected');
 			}
 			var selected_cid = this.field_select.model.get('selection');
-			var selected_field_view = this.field_registry[selected_cid].view;
+			var selected_field_view = this.fieldRegistry[selected_cid].view;
 			$(selected_field_view.el).addClass('selected');
-			this.model.set({'selected_field': this.field_registry[selected_cid].model});
+			this.model.set({'selected_field': this.fieldRegistry[selected_cid].model});
 		},
 
 		onChangeSelectedField: function(){
@@ -130,6 +135,8 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
 
         onReady: function(){
             this.field_select.trigger("ready");
+            // Trigger selection of field form.
+            this.onFieldSelectChange();
         },
 
         onResizeStop: function(){

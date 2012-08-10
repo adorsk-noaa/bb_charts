@@ -20,7 +20,7 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
 
 		initialize: function(opts){
 			$(this.el).addClass('chart-editor');
-			this.render();
+			this.initialRender();
 			this.showInstructions();
 
 			var ds = this.model.get('datasource');
@@ -64,7 +64,7 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
 			
 		},
 
-		render: function(){
+		initialRender: function(){
 			$(this.el).html(_.template(template, {}));
 
 			this.$table = $(this.el).children('table.body');
@@ -77,11 +77,12 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
 
             this.fieldSelectors = {};
             _.each(['category', 'quantity'], function(fieldCategory){
+
                 var selector = new SingleFieldSelectorView({
                     el: $('.' + fieldCategory + '-field', this.el),
                     model: new Backbone.Model({
                         fields: schema.get(fieldCategory + '_fields'),
-                        selected_field: null
+                        selected_field: this.model.get(fieldCategory + '_field')
                     })
                 });
                 this.fieldSelectors[fieldCategory] = selector;
@@ -372,6 +373,12 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
             });
 			this.resize();
 			this.resizeStop();
+
+            // If there were fields, update their tabs.
+            _.each(['category', 'quantity'], function(fieldCategory){
+                var field = this.model.get(fieldCategory + '_field');
+                $('.' + fieldCategory + '-field-name', this.el).html(field.get('label'));
+            }, this);
 
             // If there is data, show the chart.
             var data = this.model.get('datasource').get('data');
