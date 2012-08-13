@@ -145,9 +145,8 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
         },
 
         onResizeStop: function(){
-            // Resize fieldsets.
-            var $field_picker = $('> .field-picker', this.el);
-            $field_picker.children('fieldset').outerWidth($field_picker.width());
+            // Resize field select.
+            $(this.field_select.el).outerWidth($(this.field_select.el).parent().width());
             this.field_select.trigger("resizeStop");
         },
 

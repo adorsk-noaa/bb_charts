@@ -296,35 +296,44 @@
 
 .single-field-selector{
 
+    > .section{
+        .rounded_corners(5px);
+        background-color: @chrome_secondary;
+        position: relative;
+        margin-bottom: 5px;
+        padding: 2px;
 
-	fieldset{
-		border: thin solid @chrome_secondary;
+        &:last-child {
+            margin-bottom: 0;
+        }
 
-		legend {
-			font-family: sans-serif;
-		}
-	}
+        > .header {
+            margin: 0px;
+            padding: 5px;
+            font-weight: normal;
+            font-size: 16px;
+        }
 
-    fieldset.field > .body{
-        width: 100%;
+        > .body{
+            background-color: white;
+            padding: 5px;
+
+            .field-options {
+                .field {
+                    display: none;
+                    &.selected {
+                        display: inherit;
+                    }
+
+                    input[type="text"]{
+                        max-width: 4em;
+                    }
+                }
+
+                .categorical-category-field{
+                    font-style: italic;
+                }
+            }
+        }
     }
-
-	.field-options {
-
-		.field {
-			display: none;
-			&.selected {
-				display: inherit;
-			}
-
-			input[type="text"]{
-				max-width: 4em;
-			}
-		}
-
-		.categorical-category-field{
-			font-style: italic;
-		}
-	}
-
 }
