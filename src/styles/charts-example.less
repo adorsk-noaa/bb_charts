@@ -36,6 +36,18 @@
 
 .chart-editor{
 
+    .table{
+        display: table;
+    }
+
+    .row {
+        display: table-row;
+    }
+
+    .cell {
+        display: table-cell;
+    }
+
 	display: inline-block;
 	position: relative;
 
@@ -45,13 +57,16 @@
 		border-collapse: collapse;
 		width: @tw;
 		height: 600px;
-		> .row {
-			> .cell{
-			}
-			height: 100%;
-		}
 
-		.bottom-row{
+        > .row {
+
+            > .cell{
+                height: 100%;
+                vertical-align: top;
+            }
+        }
+
+		.bottom-row {
 			height: @field_tab_h;
 		}
 
