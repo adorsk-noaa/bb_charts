@@ -67,7 +67,7 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
 		initialRender: function(){
 			$(this.el).html(_.template(template, {}));
 
-			this.$table = $(this.el).children('table.body');
+			this.$table = $(this.el).children('.table.body');
 			this.$cfc = $('.category-field-container', this.el);
 			this.$qfc = $('.quantity-field-container', this.el);
 			this.$loading_animation = $('.loading-animation', this.el);
