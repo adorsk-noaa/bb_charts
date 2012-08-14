@@ -14,10 +14,6 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
 
 	var SingleFieldSelectorView = Backbone.View.extend({
 
-		events: {
-			'change .field-picker-select': 'onFieldSelectChange'
-		},
-
 		initialize: function(opts){
 			$(this.el).addClass('field-selector single-field-selector');
 			this.fieldRegistry = {};
@@ -119,11 +115,15 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
 
 
 		onFieldSelectChange: function(e){
+			var selected_cid = this.field_select.model.get('selection');
+            if (! selected_cid){
+                return;
+            }
+
 			if (this.model.get('selected_field')){
 				var previously_selected_cid = this.model.get('selected_field').cid;
 				$(this.fieldRegistry[previously_selected_cid].view.el).removeClass('selected');
 			}
-			var selected_cid = this.field_select.model.get('selection');
 			var selected_field_view = this.fieldRegistry[selected_cid].view;
 			$(selected_field_view.el).addClass('selected');
 			this.model.set({'selected_field': this.fieldRegistry[selected_cid].model});

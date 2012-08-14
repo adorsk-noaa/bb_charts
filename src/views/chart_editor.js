@@ -377,7 +377,9 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
             // If there were fields, update their tabs.
             _.each(['category', 'quantity'], function(fieldCategory){
                 var field = this.model.get(fieldCategory + '_field');
-                $('.' + fieldCategory + '-field-name', this.el).html(field.get('label'));
+                if (field){
+                    $('.' + fieldCategory + '-field-name', this.el).html(field.get('label'));
+                }
             }, this);
 
             // If there is data, show the chart.
