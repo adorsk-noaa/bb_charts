@@ -148,16 +148,20 @@ function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer){
 					if (! series.hasOwnProperty(k)){
 						series[k] = [];
 					}
+                    // Format value and point.
+                    v.value = parseFloat(v.value);
 					var formatted_point = [v.value, i];
 					series[k].push(formatted_point);
 
-					// Update max/min.
-					if (! (data_bounds.min < v.value) || data_bounds.min == null){
-						data_bounds.min = v.value;	
-					}
-					if (! (data_bounds.max > v.value) || data_bounds.max == null){
-						data_bounds.max = v.value;
-					}
+                    // If v is a value, update min/max.
+                    if (! isNaN(v.value)){
+                        if (! (data_bounds.min < v.value) || data_bounds.min == null){
+                            data_bounds.min = v.value;	
+                        }
+                        if (! (data_bounds.max > v.value) || data_bounds.max == null){
+                            data_bounds.max = v.value;
+                        }
+                    }
 				}, this);
 
 				labels.push(this.formatDatumLabel(datum));
