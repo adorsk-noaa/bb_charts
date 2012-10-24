@@ -1,8 +1,8 @@
 define([
 	"jquery",
-	"use!backbone",
-	"use!underscore",
-	"use!ui",
+	"backbone",
+	"underscore",
+	"ui",
 	"_s",
 	"text!./templates/numeric_field.html"
 		],

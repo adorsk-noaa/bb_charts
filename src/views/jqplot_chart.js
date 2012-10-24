@@ -1,12 +1,12 @@
 define([
 	"jquery",
-	"use!backbone",
-	"use!underscore",
-	"use!ui",
+	"backbone",
+	"underscore",
+	"ui",
 	"_s",
-	"use!jqplot",
-	"use!jqp_bar",
-	"use!jqp_cat_axis_renderer",
+	"jqplot",
+	"jqp_bar",
+	"jqp_cat_axis_renderer",
 		],
 function($, Backbone, _, ui, _s, JqPlot, JqpBar, JqpCatAxisRenderer){
 

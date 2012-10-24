@@ -1,8 +1,8 @@
 define([
 	"jquery",
-	"use!backbone",
-	"use!underscore",
-	"use!ui",
+	"backbone",
+	"underscore",
+	"ui",
 	"_s",
 	"Util",
 	"./single_field_selector",
@@ -64,6 +64,11 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
 			
 		},
 
+
+        getFieldSelectorClass: function(){
+            return SingleFieldSelectorView;
+        },
+
 		initialRender: function(){
 			$(this.el).html(_.template(template, {}));
 
@@ -78,7 +83,8 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
             this.fieldSelectors = {};
             _.each(['category', 'quantity'], function(fieldCategory){
 
-                var selector = new SingleFieldSelectorView({
+                var SelectorClass = this.getFieldSelectorClass();
+                var selector = new SelectorClass({
                     el: $('.' + fieldCategory + '-field', this.el),
                     model: new Backbone.Model({
                         fields: schema.get(fieldCategory + '_fields'),

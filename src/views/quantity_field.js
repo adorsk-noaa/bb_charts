@@ -1,9 +1,9 @@
 define([
 	"jquery",
-	"use!backbone",
-	"use!underscore",
-	"use!ui",
-	"use!_s",
+	"backbone",
+	"underscore",
+	"ui",
+	"_s",
     "./field"
 		],
 function($, Backbone, _, ui, _s, FieldView){

@@ -1,8 +1,8 @@
 define([
 	"jquery",
-	"use!backbone",
-	"use!underscore",
-	"use!ui",
+	"backbone",
+	"underscore",
+	"ui",
 	"_s",
 	"Util",
 	"./categorical_category_field",
@@ -57,12 +57,16 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
             this.field_select.model.set('choices', choices); 
 		},
 
+        formatter: function(s){
+            return s;
+        },
+
 		getRegisteredField: function(field_model){
 			if (! this.fieldRegistry.hasOwnProperty(field_model.cid)){
 				var field_choice = {
                     value: field_model.cid,
-                    label: field_model.get('label'),
-                    info: field_model.get('info')
+                    label: this.formatter(field_model.get('label')),
+                    info: this.formatter(field_model.get('info'))
                 };
 				var field_view = this.getFieldView(field_model);
 				this.fieldRegistry[field_model.cid] = {
