@@ -111,7 +111,6 @@ function($, Backbone, _, ui, _s, Util, CategoricalCategoryFieldView, NumericCate
 					fieldViewClass = NumericCategoryFieldView;
 				}
 			}
-
 			return new fieldViewClass({
 				model: field_model
 			});
