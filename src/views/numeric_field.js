@@ -6,9 +6,9 @@ define([
 	"_s",
 	"Util/validators",
 	"Util/qtipUtil",
-	"text!./templates/numeric_field.html"
+	"text!./templates/numeric_field_form.html"
 		],
-function($, Backbone, _, ui, _s, validators, qtipUtil, template){
+function($, Backbone, _, ui, _s, validators, qtipUtil, form_template){
 
     var NumericFieldView = Backbone.View.extend({
 
@@ -19,9 +19,8 @@ function($, Backbone, _, ui, _s, validators, qtipUtil, template){
 
 		initialize: function(opts){
 			$(this.el).addClass('numeric-field');
-			this.template = opts.template || template;
 			this.entity = this.model.get('entity');
-			this.render();
+			this.initialRender();
 
 			// Set initial properties on inputs.
 			_.each(['min', 'max'], function(minmax){
@@ -37,8 +36,12 @@ function($, Backbone, _, ui, _s, validators, qtipUtil, template){
 
 		},
 
-		render: function(){
-			$(this.el).html(_.template(this.template, {model: this.model, entity: this.entity}));
+		initialRender: function(){
+			$(this.el).html(
+        _.template(
+          form_template,
+          {model: this.model, entity: this.entity})
+      );
 		},
 
 		onMinMaxTextChange: function(e){
