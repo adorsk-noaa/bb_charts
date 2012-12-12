@@ -10,20 +10,21 @@
 @tab_corner_radius: 7px;
 
 .chart-editor{
-	display: inline-block;
-	position: relative;
 
-	@tw: 600px;
-	> .table{
-		border-spacing: 0;
-		border-collapse: collapse;
-		width: @tw;
-		height: 600px;
-	}
+  display: inline-block;
+  position: relative;
 
-	.chart-title{
-		text-align: right;
-	}
+  @tw: 600px;
+  > .table{
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: @tw;
+    height: 600px;
+  }
+
+  .chart-title{
+    text-align: right;
+  }
 
   .ui-tabble-tab {
     > div {
@@ -35,97 +36,103 @@
   }
 
 
-	.category-field-tab{
+  .category-field-tab{
     > div {
-      width: 200px;
+      width: 260px;
+      overflow-y: scroll;
     }
-	}
+  }
 
   .quantity-field-tab{
     > div {
     }
-	}
+  }
 
-	.chart-container{
-		height: 100%;
-		width: 100%;
-		position: relative;
-		overflow: hidden;
-		.rounded_corners(@tab_corner_radius);
+  .chart-container{
+    height: 100%;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    .rounded_corners(@tab_corner_radius);
 
-		.chart{
-			position: absolute;
-			left: 0;
-			right: 0;
-			top: 0;
-			bottom: 0;
-		}
+    .chart{
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+    }
 
-		.instructions{
-			.rounded_corners(@tab_corner_radius);	
-			border: thin solid @chrome_primary;
-			background: @fill_primary;
-			text-align: center;
+    .instructions{
+      .rounded_corners(@tab_corner_radius);	
+      border: thin solid @chrome_primary;
+      background: @fill_primary;
+      text-align: center;
       margin: 20px;
-			overflow: auto;
+      overflow: auto;
 
-			> .body{
-				padding: 3em;
-			}
-		}
+      > .body{
+        padding: 3em;
+      }
+    }
 
-		.loading-animation{
-			position: absolute;
-			width: 105px;
-			height: 105px;
-			background: url(images/loading-placeholder.gif) center center no-repeat; 
-			z-index: 9999;
-			display: none;
-		}
+    .loading-animation{
+      position: absolute;
+      width: 105px;
+      height: 105px;
+      background: url(images/loading-placeholder.gif) center center no-repeat; 
+      z-index: 9999;
+      display: none;
+    }
 
-	}
+  }
 
 }
 
 .single-field-selector{
-    > .section{
-        .rounded_corners(5px);
-        background-color: @chrome_secondary;
-        position: relative;
-        margin-bottom: 5px;
-        padding: 2px;
 
-        &:last-child {
-            margin-bottom: 0;
-        }
+  .ui-selectmenu{
+    height: auto;
+  }
 
-        > .header {
-            margin: 0px;
-            padding: 5px;
-            font-weight: normal;
-            font-size: 16px;
-        }
+  > .section{
+    .rounded_corners(5px);
+    background-color: @chrome_secondary;
+    position: relative;
+    margin-bottom: 5px;
+    padding: 2px;
 
-        > .body{
-            background-color: white;
-            padding: 5px;
-
-            .field-options {
-                .field {
-                    display: none;
-                    &.selected {
-                        display: inherit;
-                    }
-
-                    input[type="text"]{
-                        max-width: 4em;
-                    }
-                }
-
-                .categorical-category-field{
-                    font-style: italic;
-                }
-            }
-        }
+    &:last-child {
+      margin-bottom: 0;
     }
+
+    > .header {
+      margin: 0px;
+      padding: 5px;
+      font-weight: normal;
+      font-size: 16px;
+    }
+
+    > .body{
+      background-color: white;
+      padding: 5px;
+
+      .field-options {
+        .field {
+          display: none;
+          &.selected {
+            display: inherit;
+          }
+
+          input[type="text"]{
+            max-width: 4em;
+          }
+        }
+
+        .categorical-category-field{
+          font-style: italic;
+        }
+      }
+    }
+  }
 }
