@@ -190,7 +190,9 @@ function($, Backbone, _, ui, _s, Tabble, Util, SingleFieldSelectorView, JqplotCh
       var set_data = {};
       _.each(['min', 'max'], function(minmax){
         if (qField.get('entity').get(minmax + 'auto')){
-          set_data[minmax] = this.model.get('chart').get(minmax);
+          var autoValue = this.model.get('chart').get(minmax);
+          set_data[minmax] = autoValue;
+          qField.get('entity').set(minmax, autoValue);
         }
       }, this);
 
