@@ -142,6 +142,7 @@ function($, Backbone, _, ui, _s, Tabble, Util, SingleFieldSelectorView, JqplotCh
       // Update the view.
       $('.' + opts.fieldCategory + '-field-name', this.el).html(newField.get('label'));
       this.model.set(opts.fieldCategory + '_field', newField);
+      this.$table.tabble('resize');
       this.updateChartTitle();
       this.updateDatasourceQuery();
     },
