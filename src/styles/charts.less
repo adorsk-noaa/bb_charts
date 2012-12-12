@@ -8,19 +8,6 @@
 @tab_corner_radius: 7px;
 
 .chart-editor{
-
-    .table{
-        display: table;
-    }
-
-    .row {
-        display: table-row;
-    }
-
-    .cell {
-        display: table-cell;
-    }
-
 	display: inline-block;
 	position: relative;
 
@@ -30,149 +17,42 @@
 		border-collapse: collapse;
 		width: @tw;
 		height: 600px;
-
-        > .row {
-
-            > .cell{
-                height: 100%;
-                vertical-align: top;
-            }
-        }
-
-		.bottom-row {
-			height: @field_tab_h;
-		}
-
-		.middle-row .left-column{
-			width: @field_tab_h;
-		}
-
 	}
 
 	.chart-title{
 		text-align: right;
 	}
 
+  .ui-tabble-tab {
+    > div {
+      background-color: white;
 
-	.quantity-field-tab, .category-field-tab{
+      > .field-container {
+      }
+    }
+  }
 
-		background: @chrome_primary;  
 
-		> .title-container{
-
-			text-align: center;
-
-			.title {
-				.button;
-				.rounded_corners(@tab_corner_radius);
-				display: block;
-                margin-left: auto;
-                margin-right: auto;
-				margin: @padding_tight;
-				font-size: 18px;
-				padding: 1px @padding_looser;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: nowrap;
-
-                .field-category{
-                    vertical-align: middle;
-                }
-
-                .field-name{
-                    display: inline-block;
-                    vertical-align: middle;
-                    text-overflow: ellipsis;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    max-width: 50%;
-                }
-
-				button.toggle {
-					.button;
-				}
-			}
-		}
-
-		> .body-container{
-			border-color: @chrome_primary;
-			border-style: solid;
-			font-size: 14px;
-
-			> .body{
-				overflow-y: auto;
-
-				> .inner{
-					padding: @padding_normal;
-				}
-			}
-		}
+	.category-field-tab{
+    > div {
+      width: 200px;
+      top: 0;
+      bottom: 0;
+    }
 	}
 
-	.category-field-container{
-		@body_w: 200px;
-		min-width: @field_tab_h;
-		max-width: @field_tab_h + @body_w + @tab_bw + 2 * @padding_normal;
-		width: @field_tab_h;
-		height: 100%;
-		overflow: hidden;
-		position: relative;
-
-		.category-field-tab{
-			.rounded_corners_left(@tab_corner_radius);
-			position: absolute;
-			left: 0;
-			right: 0;
-			top: 0;
-			bottom: 0;
-
-			> .title-container{
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: @field_tab_h;				
-				height: 100%;
-
-				> .rotate-container{
-					position: absolute;
-					left: 0;
-					bottom: 0;
-					overflow: hidden;
-
-				}
-			}
-
-			.body-container{
-				position: absolute;
-				left: @field_tab_h;
-				right: @tab_bw;
-				top: @tab_bw;
-				bottom: @tab_bw;
-				padding-left: 5px;
-				border-width: 0;
-				overflow: hidden;
-
-				> .body{
-					position: absolute;
-					top: 0;
-					left: 0;
-					width: @body_w + 2 * @padding_normal;
-					height: 100%;
-					background: white;
-				}
-			}
-		}
+  .quantity-field-tab{
+    > div {
+      height: 200px;
+    }
 	}
-
 
 	.chart-container{
-
 		height: 100%;
 		width: 100%;
 		position: relative;
 		overflow: hidden;
 		.rounded_corners(@tab_corner_radius);
-		border: thin solid @chrome_primary;
 
 		.chart{
 			position: absolute;
@@ -209,71 +89,9 @@
 
 	}
 
-	.quantity-field-container{
-		@body_h: 225px;
-		min-height: @field_tab_h;
-		max-height: @field_tab_h + @tab_corner_radius + @body_h + 2 * @padding_normal;
-		height: @field_tab_h;
-		width: 100%;
-		overflow: hidden;
-		position: relative;
-
-		.quantity-field-tab{
-			.rounded_corners_bottom(@tab_corner_radius);
-			position: absolute;
-			left: 0;
-			right: 0;
-			top: 0;
-			bottom: 0;
-
-			> .title-container{
-				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: @field_tab_h;
-			}
-
-			> .body-container{
-				position: absolute;
-				top: @field_tab_h;
-				left: @tab_bw;
-				right: @tab_bw;
-				bottom: @tab_corner_radius;
-				overflow: hidden;
-				border-width: 0 0;
-				
-				> .body{
-					position: absolute;
-					top: 0;
-					left: 0;
-					right: 0;
-					height: @body_h + 2 * @padding_normal ;	
-					background: white;
-				}
-			}
-
-		}
-
-	}
-
 }
-
-.rotate-270{
-	-moz-transform: rotate(270deg) translate(0,100%);
-	-moz-transform-origin: 0% 100%;
-	-o-transform: rotate(270deg) translate(0, 100%);
-	-o-transform-origin: 0% 100%;
-	-webkit-transform: rotate(270deg) translate(0, 100%);
-	-webkit-transform-origin: 0% 100%;
-
-}
-
-
-
 
 .single-field-selector{
-
     > .section{
         .rounded_corners(5px);
         background-color: @chrome_secondary;

@@ -4,19 +4,15 @@ define([
   "underscore",
   "ui",
   "_s",
+  "tabble",
   "Util",
   "./single_field_selector",
   "./jqplot_chart",
   "text!./templates/chart_editor.html"
 ],
-function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView, template){
+function($, Backbone, _, ui, _s, Tabble, Util, SingleFieldSelectorView, JqplotChartView, template){
 
   var ChartEditorView = Backbone.View.extend({
-
-    events: {
-      'click .category-field-container .title': 'toggleCategoryField',
-      'click .quantity-field-container .title': 'toggleQuantityField'
-    },
 
     initialize: function(opts){
       $(this.el).addClass('chart-editor');
@@ -72,9 +68,10 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
     initialRender: function(){
       $(this.el).html(_.template(template, {}));
 
-      this.$table = $(this.el).children('.table.body');
-      this.$cfc = $('.category-field-container', this.el);
-      this.$qfc = $('.quantity-field-container', this.el);
+      this.$table = $(this.el).find('> table').eq(0);
+      this.$table.tabble({
+        stretchTable: true
+      });
       this.$loading_animation = $('.loading-animation', this.el);
 
       var ds = this.model.get('datasource');
@@ -103,22 +100,16 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
 
     resize: function(){
       Util.util.fillParent(this.$table);
-      this.resizeVerticalTab();
     },
 
     resizeStop: function(){
+      this.$table.tabble('resize');
       this.resizeChart();
       this.resizeLoadingAnimation();
 
       _.each(this.subViews, function(v){
         v.trigger('resizeStop');
       });
-    },
-
-    resizeVerticalTab: function(){
-      var $rc = $('.rotate-container', this.el);
-      $rc.css('width', $rc.parent().height());
-      $rc.css('height', $rc.parent().width());
     },
 
     resizeChart: function(){
@@ -130,77 +121,6 @@ function($, Backbone, _, ui, _s, Util, SingleFieldSelectorView, JqplotChartView,
       this.$loading_animation.css('left', $container.width()/2 - this.$loading_animation.width()/2);
       this.$loading_animation.css('top', $container.height()/2 - this.$loading_animation.height()/2);
     },
-
-    toggleCategoryField: function(){
-      if (! this.$cfc.hasClass('changing')){
-        this.expandContractFieldContainer({
-          expand: ! this.$cfc.hasClass('expanded'),
-          field_container: this.$cfc,
-          dimension: 'width'
-        });
-      }
-    },
-
-    toggleQuantityField: function(){
-      if (! this.$qfc.hasClass('changing')){
-        this.expandContractFieldContainer({
-          expand: ! this.$qfc.hasClass('expanded'),
-          field_container: this.$qfc,
-          dimension: 'height'
-        });
-      }
-    },
-
-    expandContractFieldContainer: function(opts){
-      var _this = this;
-      var expand = opts.expand;
-      var $fc = opts.field_container;
-      var dim = opts.dimension;
-
-      // Calculate how much to change dimension.
-      var delta = parseInt($fc.css('max' + _s.capitalize(dim)), 10) - parseInt($fc.css('min' + _s.capitalize(dim)), 10);
-      if (! expand){
-        delta = -1 * delta;
-      }
-
-      // Animate field container dimension.
-      $fc.addClass('changing');
-
-      // Toggle button text
-      var button_text = ($('button.toggle', $fc).html() == '\u25B2') ? '\u25BC' : '\u25B2';
-      $('button.toggle', $fc).html(button_text);
-
-      // Execute the animation.
-      var fc_dim_opts = {};
-      fc_dim_opts[dim] = parseInt($fc.css(dim),10) + delta;
-      $fc.animate(
-        fc_dim_opts,
-        {
-          complete: function(){
-            $fc.removeClass('changing');
-
-            if (expand){
-              $fc.addClass('expanded')
-            }
-            else{
-              $fc.removeClass('expanded')
-              _this.resize();
-              _this.resizeStop();
-            }
-          }
-        }
-      );
-
-      // Animate cell dimension.
-      $fc.parent().animate(fc_dim_opts);
-
-
-      // Animate table dimension.
-      var table_dim_opts = {};
-      table_dim_opts[dim] = parseInt(this.$table.css(dim),10) + delta;
-      this.$table.animate(table_dim_opts);
-    },
-
 
     onSelectedFieldChange: function(opts){
       opts = opts || {};
