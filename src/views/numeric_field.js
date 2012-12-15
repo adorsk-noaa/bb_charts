@@ -78,11 +78,17 @@ function($, Backbone, _, ui, _s, validators, qtipUtil, form_template){
         parsedVals[minmax] = parseFloat(rawVals[minmax], 10);
       });
 
-      if (parsedVals['min'] > parsedVals['max']){
-        // @TODO:error message here.
-        console.log('badness');
+      if (parsedVals['min'] >= parsedVals['max']){
+        var minmax = $(e.currentTarget).data('minmax');
+        var $errorMsg = $('<span>min must be &lt; max <a href="javascript:{}">undo</a></span>');
+        $('a', $errorMsg).on('click', function(){that.setMinMaxText(minmax)});
+        els[minmax].$text.errorTip('show', $errorMsg);
         return;
       }
+
+      $.each(els, function(minmax, minmaxEls){
+        minmaxEls.$text.errorTip('remove');
+      });
 
       this.entity.set(parsedVals);
 		},
