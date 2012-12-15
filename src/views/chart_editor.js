@@ -255,22 +255,19 @@ function($, Backbone, _, ui, _s, Tabble, Util, SingleFieldSelectorView, JqplotCh
 
       // Otherwise...
 
-      // If currently selected category field is numeric, update min/max.
+      // If currently selected category field is numeric, update min/max if auto
+      // is set.
       if (cField && cField.get('value_type') == 'numeric'){
-
-        // Get min/max from data.
-        var dmin = (data[0].min == -Number.MAX_VALUE) ? data[0].max : data[0].min;
-        var dmax = data[0].max;
-        if (data.length > 1){
-          dmax = (data[data.length - 1].max == Number.MAX_VALUE) ? data[data.length - 1].min : data[data.length -1].max;
-        }
-
+        var entity = cField.get('entity');
+        var setObj = {};
+        $.each(['min', 'max'], function(i, minmax){
+          if (entity.get(minmax + 'auto')){
+            setObj[minmax] = (minmax == 'min') ? data[0].min : data[data.length - 1].max;
+          }
+        })
         // Update category field min/max.
         this.disconnectCategoryField(cField);
-        cField.get('entity').set({
-          min: dmin,
-          max: dmax
-        });
+        cField.get('entity').set(setObj);
         this.connectCategoryField(cField);
       }
 
