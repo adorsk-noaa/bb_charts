@@ -24,10 +24,18 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
       this.positions = ['left', 'top', 'bottom', 'right'];
 
       this.series = this.model.get('series');
-      this.axes = this.model.get('axes');
+      this.xAxes = this.model.get('xAxes');
+      this.yAxes = this.model.get('yAxes');
 
       this.initialRender();
+      this.postInitialize();
+    },
+
+    postInitialize: function(){
       this.on('remove', this.remove, this);
+      this.xAxes.on('change remove add', this.onXAxesChange, this);
+      this.yAxes.on('change remove add', this.onYAxesChange, this);
+      this.series.on('change remove add', this.onSeriesChange, this);
     },
 
     initialRender: function(){
@@ -57,34 +65,42 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
       var _this = this;
 
       // Group elements by tab position.
-      tabEls = {
-        'left': [],
-        'bottom': []
-      };
+      var tabEls = {};
+      $.each(this.positions, function(i, pos){
+        tabEls[pos] = [];
+      });
 
       // Add axis elements to tabble tabs, e.g.
       // min/max editors for sequential axes.
-      $.each(this.axes.models, function(i, axisModel){
-        var axisEls = {};
-        $.each(_this.positions, function(j, pos){
-          axisEls[pos] = [];
-        });
-
-        var axisType = axisModel.get('type');
-        var axisPos = axisModel.get('pos');
-
-        if (axisType == 'numeric'){
-          var axisEditor = new NumericAxisEditorView({
-            model: axisModel
+      $.each({x: this.xAxes.models, y: this.yAxes.models}, function(xy, axes){
+        for (var i = 0; i < Math.min(axes.length,2); i++){
+          var axisModel = axes[i];
+          var axisEls = {};
+          $.each(_this.positions, function(i, pos){
+            axisEls[pos] = [];
           });
-          axisEls[axisPos].push(axisEditor.el);
+          var axisType = axisModel.get('type');
+          if (axisType == 'numeric'){
+            var axisEditor = new NumericAxisEditorView({
+              model: axisModel
+            });
+            axisEditor.model.on('remove', axisEditor.remove, axisEditor);
+            var pos = '';
+            if (xy == 'x'){
+              pos = (i % 2) ? 'top' : 'bottom';
+            }
+            else if (xy == 'y'){
+              pos = (i % 2) ? 'right' : 'left';
+            }
+            axisEls[pos].push(axisEditor.el);
+          }
+
+          $.each(axisEls, function(pos, posEls){
+            $.each(posEls, function(j, el){
+              tabEls[pos].push(el);
+            });
+          });
         }
-
-        $.each(axisEls, function(pos, posEls){
-          $.each(posEls, function(j, el){
-            tabEls[pos].push(el);
-          });
-        });
       });
 
       // Add els to to tabs.
@@ -98,8 +114,20 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
       });
     },
 
+    axisModelToAxisObj: function(axisModel){
+      var _this = this;
+      axisObj = {};
+      $.extend(axisObj, axisModel.toJSON());
+      if (axisModel.get('type') == 'categorical'){
+        axisObj.renderer = $.jqplot.CategoryAxisRenderer
+      }
+      return axisObj;
+    },
+
     renderChart: function(){
       var _this = this;
+
+      this.$chart.empty();
 
       // Get series data.
       var data = [];
@@ -115,24 +143,51 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
 
       // Format axis objects.
       var axesObjs = {};
-      $.each(this.axes.models, function(i, axisModel){
-        axesObjs[axisModel.id] = axisModel.toJSON();
+      $.each({x: this.xAxes.models, y: this.yAxes.models}, function(xy, axes){
+        for (var i = 0; i < Math.min(axes.length,2); i++){
+          var axisModel = axes[i];
+
+          // Set axis keys, per jqPlot
+          var axisId = xy;
+          if (i > 0){
+            axisId += '' + (i + 1);
+          }
+          axisId += 'axis';
+
+          axesObjs[axisId] = _this.axisModelToAxisObj(axisModel);
+        }
       });
 
-      this.$chart.jqplot(
-        data,
-        {
-          seriesDefaults:{
-            renderer:$.jqplot.BarRenderer,
-            rendererOptions: {fillToZero: true}
-          },
-          series: seriesObjs,
-          axes: axesObjs,
-        }
-      );
+      var chartOpts = {
+        seriesDefaults:{
+          renderer:$.jqplot.BarRenderer,
+          rendererOptions: {fillToZero: true}
+        },
+        series: seriesObjs,
+        axes: axesObjs,
+      }
+
+      console.log("plotting: ", data, chartOpts);
+
+      this.$chart.jqplot(data, chartOpts);
     },
 
     onReady: function(){
+    },
+
+    onXAxesChange: function(){
+      console.log("oxac");
+      this.renderChart();
+    },
+
+    onYAxesChange: function(){
+      console.log("oyac");
+      this.renderChart();
+    },
+
+    onSeriesChange: function(){
+      console.log("osc");
+      this.renderChart();
     }
 
   });
