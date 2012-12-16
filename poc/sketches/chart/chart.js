@@ -51,10 +51,12 @@ require(
 
         var xaxis = new Backbone.Model({
           id: 'xaxis',
+          type: 'numeric',
+          pos: 'bottom',
           min: 0,
-          minauto: null,
+          min_auto: true,
           max: 10,
-          maxauto: null
+          max_auto: null
         });
 
         var axesModel = new Backbone.Collection([xaxis]);
