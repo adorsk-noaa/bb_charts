@@ -1,9 +1,10 @@
 require(
   [
     "jquery",
-    "Charts/views/jqplotChart"
+    "Charts/views/jqplotChart",
+    "rless!Charts/styles/jqplotChart.less"
   ],
-  function($, jqplotChart){
+  function($, jqplotChart, jqplotChartCSS){
     $(document).ready(function(){
       $(document.body).append('<p id="stylesLoaded" style="display: none;"></p>');
       var cssEl = document.createElement('style');
@@ -11,8 +12,7 @@ require(
       cssEl.type = 'text/css';
 
       var stylesLoadedCSS = '#stylesLoaded {position: fixed;}\n';
-      //cssText = uiCSS + tabbleCSS + FacetsCSS + "\n#stylesLoaded {position: fixed;}\n";
-      cssText = stylesLoadedCSS;
+      cssText = jqplotChartCSS + "\n" + stylesLoadedCSS;
       if (cssEl.styleSheet){
         cssEl.styleSheet.cssText = cssText;
       }

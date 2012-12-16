@@ -5,11 +5,15 @@ define(
     "underscore",
     "ui",
     "_s",
+    "tabble",
     "jqplot",
     "jqplot/plugins/jqplot.barRenderer.min",
-    "jqplot/plugins/jqplot.categoryAxisRenderer.min"
+    "jqplot/plugins/jqplot.categoryAxisRenderer.min",
+    "text!./templates/jqplotChart.html"
 ],
-function($, Backbone, _, ui, _s, JqPlot, jqpBarRenderer, jqpCategoryAxisRenderer){
+function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
+         jqpCategoryAxisRenderer, template)
+{
 
   var JqPlotChartView = Backbone.View.extend({
 
@@ -25,6 +29,10 @@ function($, Backbone, _, ui, _s, JqPlot, jqpBarRenderer, jqpCategoryAxisRenderer
     },
 
     initialRender: function(){
+      $(this.el).html(_.template(template, {model: this.model}));
+      this.$table = $('> table', this.el).eq(0);
+      this.$table.tabble();
+      this.$chart = $('.chart-cell > .chart', this.el);
       this.renderChart();
     },
 
@@ -49,7 +57,7 @@ function($, Backbone, _, ui, _s, JqPlot, jqpBarRenderer, jqpCategoryAxisRenderer
         axesObjs[axisModel.id] = axisModel.toJSON();
       });
 
-      $(this.el).jqplot(
+      this.$chart.jqplot(
         data,
         {
           seriesDefaults:{
