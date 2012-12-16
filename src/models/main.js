@@ -1,18 +1,24 @@
-define([
-		'./chart',
-        './xy_chart',
-		'./data_source',
-		'./schema'
-], 
-function(ChartModel, XYChartModel, DataSourceModel, SchemaModel){
+define(
+  [
+    'backbone'
+],
+function(Backbone){
+  var ChartModel = Backbone.Model.extend({
+    series: null,
+    title: null
+    // ... other chart properties.
+  });
 
-	models = {
-		'ChartModel': ChartModel,
-        'XYChartModel': XYChartModel,
-		'DataSourceModel': DataSourceModel,
-		'SchemaModel': SchemaModel
-	};
+  var SeriesModel = Backbone.Model.extend({
+    data: null,
+    axis: null, // an axis id.
+    // ... other series properties.
+  });
 
-	return models;
+  var AxisModel = Backbone.Model.extend({
+    // min, max, etc.
+  });
 
+  return {
+  };
 });
