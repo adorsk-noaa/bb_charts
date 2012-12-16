@@ -116,12 +116,14 @@ require(
 
           var axesModel = chartModel.get(xy + 'Axes');
           var oldAxis = axesModel.get(axisId);
+          chartModel.set('lock_chart', true);
           if (oldAxis){
-            axesModel.remove(oldAxis, {silent: true});
-            oldAxis.trigger('remove');
+            axesModel.remove(oldAxis);
           }
-          axesModel.add(newAxis, {silent: true});
+          axesModel.add(newAxis);
           series1.set('data', seriesData);
+          chartModel.set('lock_chart', false);
+          chartModel.trigger('render');
         };
 
         setAxis('x');

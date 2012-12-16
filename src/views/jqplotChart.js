@@ -18,7 +18,6 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
   var JqPlotChartView = Backbone.View.extend({
 
     initialize: function(opts){
-      console.log("initialize");
       $(this.el).addClass('jqplot-chart');
 
       this.positions = ['left', 'top', 'bottom', 'right'];
@@ -36,6 +35,7 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
       this.xAxes.on('change remove add', this.onXAxesChange, this);
       this.yAxes.on('change remove add', this.onYAxesChange, this);
       this.series.on('change remove add', this.onSeriesChange, this);
+      this.model.on('render', this.renderChart, this);
       this.on('ready', this.onReady, this);
     },
 
@@ -58,7 +58,7 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
       this.$chart = $('.chart-cell > .chart', this.el);
     },
 
-    renderTabElements: function(){
+    renderTabElements: function(xy){
       // Add elements to tabble tabs.
       var _this = this;
 
@@ -70,36 +70,35 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
 
       // Add axis elements to tabble tabs, e.g.
       // min/max editors for sequential axes.
-      $.each({x: this.xAxes.models, y: this.yAxes.models}, function(xy, axes){
-        for (var i = 0; i < Math.min(axes.length,2); i++){
-          var axisModel = axes[i];
-          var axisEls = {};
-          $.each(_this.positions, function(i, pos){
-            axisEls[pos] = [];
+      var axes = this[xy + 'Axes'].models;
+      for (var i = 0; i < Math.min(axes.length,2); i++){
+        var axisModel = axes[i];
+        var axisEls = {};
+        $.each(_this.positions, function(i, pos){
+          axisEls[pos] = [];
+        });
+        var axisType = axisModel.get('type');
+        if (axisType == 'numeric'){
+          var axisEditor = new NumericAxisEditorView({
+            model: axisModel
           });
-          var axisType = axisModel.get('type');
-          if (axisType == 'numeric'){
-            var axisEditor = new NumericAxisEditorView({
-              model: axisModel
-            });
-            axisEditor.model.on('remove', axisEditor.remove, axisEditor);
-            var pos = '';
-            if (xy == 'x'){
-              pos = (i % 2) ? 'top' : 'bottom';
-            }
-            else if (xy == 'y'){
-              pos = (i % 2) ? 'right' : 'left';
-            }
-            axisEls[pos].push(axisEditor.el);
+          axisEditor.model.on('remove', axisEditor.remove, axisEditor);
+          var pos = '';
+          if (xy == 'x'){
+            pos = (i % 2) ? 'top' : 'bottom';
           }
-
-          $.each(axisEls, function(pos, posEls){
-            $.each(posEls, function(j, el){
-              tabEls[pos].push(el);
-            });
-          });
+          else if (xy == 'y'){
+            pos = (i % 2) ? 'right' : 'left';
+          }
+          axisEls[pos].push(axisEditor.el);
         }
-      });
+
+        $.each(axisEls, function(pos, posEls){
+          $.each(posEls, function(j, el){
+            tabEls[pos].push(el);
+          });
+        });
+      }
 
       // Add els to to tabs.
       $.each(tabEls, function(pos, posEls){
@@ -110,6 +109,8 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
           $b.append(el);
         });
       });
+
+      this.$table.tabble('resize');
     },
 
     axisModelToAxisObj: function(axisModel){
@@ -123,6 +124,9 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
     },
 
     renderChart: function(){
+      if (this.model.get('lock_chart')){
+        return;
+      }
       var _this = this;
 
       this.$chart.empty();
@@ -165,29 +169,26 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
         axes: axesObjs,
       }
 
-      console.log("plotting: ", data, chartOpts);
-
       this.$chart.jqplot(data, chartOpts);
     },
 
     onReady: function(){
-      console.log("ready");
-      this.renderTabElements();
+      this.renderTabElements('x');
+      this.renderTabElements('y');
       this.renderChart();
     },
 
     onXAxesChange: function(){
-      console.log("oxac");
       this.renderChart();
+      this.renderTabElements('x');
     },
 
     onYAxesChange: function(){
-      console.log("oyac");
       this.renderChart();
+      this.renderTabElements('y');
     },
 
     onSeriesChange: function(){
-      console.log("osc");
       this.renderChart();
     }
 
