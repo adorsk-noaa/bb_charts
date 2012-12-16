@@ -35,51 +35,35 @@ require(
       }, 500);
 
       cssDeferred.done(function(){
-        var generateCategoricalData = function(){
-          var data = {};
-          for (var i=0; i < 10; i++){
-            data["Category_" + i] =  i;
-          }
-          return data;
-        };
+        console.log("styles loaded");
 
-        var generateSequentialData = function(){
+        var generateNumericData = function(min, max, n){
           var data = [];
-          for (var i=0; i < 10; i++){
+          n = n || 1;
+          var range = (max - min)/n;
+          for (var i = min; i < max; i += range){
             data.push([i, i]);
           }
           return data;
         };
 
+        var generateCategoricalData = function(min, max, n){
+          var numData = generateNumericData(min, max, n);
+          var data = {};
+          $.each(numData, function(i, v){
+            data["Category_" + i] =  v;
+          });
+          return data;
+        };
+
+        var seriesId = 'Series';
         var series1 = new Backbone.Model({
-          label: 'series1',
-          data: generateSequentialData()
+          id: seriesId,
+          data: []
         });
         var seriesModel = new Backbone.Collection([series1]);
-
-        var yaxis1 = new Backbone.Model({
-          id: 'yaxis',
-          type: 'numeric',
-          min: 0,
-          min_auto: true,
-          max: 20,
-          max_auto: null
-        });
-
-        var xaxis1 = new Backbone.Model({
-          id: 'xaxis',
-          type: 'numeric',
-          min: 0,
-          min_auto: true,
-          max: 10,
-          max_auto: null
-        });
-        xaxis1.on('all', function(){
-          console.log('xaxis1', arguments);
-        });
-
-        var xAxes= new Backbone.Collection([xaxis1]);
-        var yAxes= new Backbone.Collection([yaxis1]);
+        var xAxes = new Backbone.Collection();
+        var yAxes = new Backbone.Collection();
 
         var chartModel = new Backbone.Model({
           title: "Testo",
@@ -88,37 +72,73 @@ require(
           yAxes: yAxes
         });
 
+        setAxis = function(xy){
+          console.log("here");
+          var attrs = ['min', 'max', 'n', 'type'];
+          var vals = {};
+          $.each(attrs, function(i, attr){
+            var val = $('#' + xy + attr).val();
+            if (attr != 'type'){
+              val = parseFloat(val);
+            }
+            vals[attr] = val;
+          });
+
+          var axisId = xy + 'Axis';
+          var seriesData;
+
+          var newAxis = new Backbone.Model({
+            id: axisId
+          });
+
+          if (vals.type == 'n'){
+            data = generateNumericData(vals.min, vals.max, vals.n);
+            newAxis.set({
+              type: 'numeric',
+              min: vals.min,
+              max: vals.max
+            });
+            seriesData = data;
+          }
+          else if (vals.type == 'c'){
+            data = generateCategoricalData(vals.min, vals.max, vals.n);
+            ticks = [];
+            seriesData = [];
+            $.each(data, function(k,v){
+              ticks.push(k);
+              seriesData.push(v);
+            });
+            newAxis.set({
+              type: 'categorical',
+              ticks: ticks
+            });
+          }
+
+          var axesModel = chartModel.get(xy + 'Axes');
+          var oldAxis = axesModel.get(axisId);
+          if (oldAxis){
+            axesModel.remove(oldAxis, {silent: true});
+            oldAxis.trigger('remove');
+          }
+          axesModel.add(newAxis, {silent: true});
+          series1.set('data', seriesData);
+        };
+
+        setAxis('x');
+        setAxis('y');
+
         var jqpChart = new jqplotChart.JqPlotChartView({
           el: $('#chart'),
           model: chartModel,
         });
 
-        $('#b1').on('click', function(){
-          var data = generateCategoricalData();
-          var ticks = [];
-          var seriesData = [];
-          var i = 0;
-          $.each(data, function(k, v){
-            i += 1;
-            ticks.push(k);
-            seriesData.push([i, v]);
+        $.each(['x', 'y'], function(i, xy){
+          $('#' + xy + 'set').on('click', function(){
+            setAxis(xy);
           });
-          var newXAxis = new Backbone.Model({
-            'id': 'newXAxis',
-            'type': 'categorical',
-            'ticks': ticks
-          });
-          var newSeries = new Backbone.Model({
-            data: seriesData
-          });
-          xAxes.remove(xaxis1, {silent: true});
-          xaxis1.trigger('remove');
-          xAxes.add(newAxis, {silent: true});
-          seriesModel.remove(series1, {silent: true});
-          series1.trigger('remove');
-          seriesModel.add(newSeries);
         });
 
+        jqpChart.trigger('ready');
         console.log('done');
       });
 

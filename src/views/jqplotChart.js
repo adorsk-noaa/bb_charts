@@ -36,6 +36,7 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
       this.xAxes.on('change remove add', this.onXAxesChange, this);
       this.yAxes.on('change remove add', this.onYAxesChange, this);
       this.series.on('change remove add', this.onSeriesChange, this);
+      this.on('ready', this.onReady, this);
     },
 
     initialRender: function(){
@@ -55,9 +56,6 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
       });
 
       this.$chart = $('.chart-cell > .chart', this.el);
-
-      this.renderTabElements();
-      this.renderChart();
     },
 
     renderTabElements: function(){
@@ -173,6 +171,9 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
     },
 
     onReady: function(){
+      console.log("ready");
+      this.renderTabElements();
+      this.renderChart();
     },
 
     onXAxesChange: function(){
@@ -195,5 +196,6 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
   return {
     JqPlotChartView: JqPlotChartView
   };
+
 });
 

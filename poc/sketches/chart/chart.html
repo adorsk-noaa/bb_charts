@@ -4,10 +4,26 @@
         <script type="text/javascript" src="../../instance_config.js"></script>
         <script type="text/javascript" src="../../require_config.js"></script>
         <script data-main="sketches/chart/chart" src="../../assets/js/require.js"></script>
+
+        <style type="text/css">
+            h4 {
+                padding: 0;
+                margin: 0;
+            }
+        </style>
     </head>
 
     <body>
-    <button id="b1">b1</button>
-        <div id="chart" style="width: 600px; height: 400px; border: thin solid black;"></div>
+
+    <div>
+        <h4>x</h4>
+        min: <input id="xmin" value="0"> max: <input id="xmax" value="10"> npoints: <input id="xn" value="10"> type (c or n): <input id="xtype" value="n"><button id="xset">set</button>
+    </div>
+    <div>
+        <h4>y</h4>
+        min: <input id="ymin" value="0"> may: <input id="ymax" value="10"> npoints: <input id="yn" value="10"> type (c or n): <input id="ytype" value="n"><button id="yset">set</button>
+    </div>
+
+    <div id="chart" style="width: 600px; height: 400px; border: thin solid black;"></div>
     </body>
 </html>
