@@ -73,7 +73,6 @@ require(
         });
 
         setAxis = function(xy){
-          console.log("here");
           var attrs = ['min', 'max', 'n', 'type'];
           var vals = {};
           $.each(attrs, function(i, attr){
@@ -141,7 +140,6 @@ require(
         });
 
         jqpChart.trigger('ready');
-        console.log('done');
       });
 
     });

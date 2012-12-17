@@ -31,9 +31,16 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
     },
 
     postInitialize: function(){
+      var _this = this;
       this.on('remove', this.remove, this);
-      this.xAxes.on('change remove add', this.onXAxesChange, this);
-      this.yAxes.on('change remove add', this.onYAxesChange, this);
+      $.each(['x', 'y'], function(i, xy){
+        var axisCollection = _this[xy + 'Axes'];
+        axisCollection.on('change remove', _this.renderChart, _this);
+        axisCollection.on('add', function(){
+          _this.renderTabElements(xy);
+          _this.renderChart();
+        }, _this)
+      });
       this.series.on('change remove add', this.onSeriesChange, this);
       this.model.on('render', this.renderChart, this);
       this.on('ready', this.onReady, this);
@@ -108,9 +115,18 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
         $.each(posEls, function(j, el){
           $b.append(el);
         });
+        // If tab is empty, hide it.
+        if (! $b.children().length){
+          _this.$table.tabble('showHideTab', {pos: pos, showHide: 'hide', animate: false});
+        }
+        else{
+          if ($tab.hasClass('hidden')){
+            _this.$table.tabble('showHideTab', {pos: pos, showHide: 'show', animate: false});
+          }
+        }
       });
 
-      this.$table.tabble('resize');
+      setTimeout(function(){_this.resizeStop();}, 500);
     },
 
     axisModelToAxisObj: function(axisModel){
@@ -178,17 +194,9 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
       this.renderChart();
     },
 
-    onXAxesChange: function(){
-      this.renderChart();
-      this.renderTabElements('x');
-    },
-
-    onYAxesChange: function(){
-      this.renderChart();
-      this.renderTabElements('y');
-    },
-
-    onSeriesChange: function(){
+    resizeStop: function(){
+      var _this = this;
+      this.$table.tabble('resize');
       this.renderChart();
     }
 
