@@ -17,6 +17,8 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
 {
   var JqPlotChartView = Backbone.View.extend({
 
+    _delay: 200,
+
     initialize: function(opts){
       $(this.el).addClass('jqplot-chart');
 
@@ -50,10 +52,11 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
       var _this = this;
       $(this.el).html(_.template(template, {model: this.model}));
       this.$table = $('> table', this.el).eq(0);
-      this.$table.tabble();
-
-      // Resize chart after tabs toggle.
-      // @TODO: add events to tabble, then listen here.
+      this.$table.tabble({
+        resize: function(){
+          _this._onTabbleResize();
+        }
+      });
 
       // Save shortcuts to tabs.
       this.tabs = {};
@@ -197,6 +200,23 @@ function($, Backbone, _, ui, _s, Tabble, JqPlot, jqpBarRenderer,
     resizeStop: function(){
       var _this = this;
       this.$table.tabble('resize');
+      this.renderChart();
+    },
+
+    _onTabbleResize: function(){
+      // Queue up resize events to trigger
+      // after a delay, so we're not continually re-drawing.
+      var _this = this;
+      if (this._tabbleResizeTimeout){
+        clearTimeout(this._tabbleResizeTimeout);
+      }
+      this._tabbleResizeTimeout = setTimeout(function(){
+        _this._doOnTabbleResize();
+      }, this._delay);
+    },
+
+    _doOnTabbleResize: function(){
+      this._tabbleResizeTimeout = null;
       this.renderChart();
     }
 
