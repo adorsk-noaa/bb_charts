@@ -12,4 +12,69 @@
       height: 100%;
     }
   }
+
+  .ui-tabble-tab {
+    > h3{
+      margin: 0;
+    }
+  }
+
+  .ui-tabble-tab{
+    > div {
+      .numeric-axis-editor {
+        position: relative;
+
+        > .min, > .max{
+          width: 6em;
+          position: absolute;
+        }
+
+        input {
+          max-width: 96%;
+        }
+      }
+    }
+  }
+
+  .ui-tabble-tab.left, .ui-tabble-tab.right{
+    > div {
+      .numeric-axis-editor {
+        height: 100%;
+        min-height: 6em;
+        width: 6.2em;
+        overflow: hidden;
+
+        > .max{
+          top: 0;
+        }
+        > .min{
+          bottom: 0;
+          > .min {
+            bottom: 0
+          }
+          > .min_auto{
+            bottom: 1.5em;
+          }
+        }
+      }
+    }
+  }
+
+  .ui-tabble-tab.bottom, .ui-tabble-tab.top{
+    > div {
+      .numeric-axis-editor {
+        width: 100%;
+        height: 3em;
+
+        > .max{
+          text-align: left;
+        }
+
+        > .min{
+          right: .3em;
+          text-align: right;
+        }
+      }
+    }
+  }   
 }

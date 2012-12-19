@@ -36,9 +36,9 @@ function($, Backbone, _, ui, _s, template){
       var attr = $input.data('attr');
       var value = null;
       if (attr.indexOf('_auto') !== -1){
-        var minmaxId = attr.substr(0,3);
+        var minmax = attr.substr(0,3);
         var value = $input.is(':checked');
-        $('.input.' + minmaxId + 'input[type="text"]', this.el).each(
+        $('input[type="text"].' + minmax, this.el).each(
           function(i, textEl){
           $(textEl).prop('disabled', value);
         });
